@@ -1,4 +1,4 @@
-package agent;
+package distributedAuction.agent;
 
 import java.util.LinkedList;
 import java.util.Scanner;

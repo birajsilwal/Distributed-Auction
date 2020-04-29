@@ -1,4 +1,4 @@
-package auctionHouse;
+package distributedAuction.auctionHouse;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
