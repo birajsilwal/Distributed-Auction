@@ -1,24 +1,39 @@
 package distributedAuction.agent;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-public class Agent {
+public class Agent{
+    // these variables store info about the agent itself
+    private static Agent agent;
     private String name;
     private double balance;
-
-    private static Agent agent;
     private int accountNum;
 
-    private static LinkedList<String> auctionHouses;
-    private static LinkedList<String> itemList;
+    // these variables handle communication with Bank
+    private final Socket clientSocket;
+    private PrintWriter out;
+    private BufferedReader in;
 
-    public Agent(String name, double balance){
+    // these variables store info about the auction houses
+    private LinkedList<Integer> auctionHousePorts = new LinkedList<>();
+    private LinkedList<String> auctionHouses = new LinkedList<>();
+    private static LinkedList<String> itemList = new LinkedList<>();
+
+    public Agent(String name, double balance) throws IOException{
+        clientSocket = new Socket("localHost", 4444);
+        out = new PrintWriter(clientSocket.getOutputStream(), true);
+        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         this.name = name;
         this.balance = balance;
     }
 
-    public static void main(String args[]){
+    public static void main(String args[]) throws IOException{
         //create agent with user input from console
         agent = createAgent();
         System.out.println("You have established the following agent: " + agent);
@@ -31,9 +46,26 @@ public class Agent {
 
         //enter main menu
         agent.mainMenu();
+
+/*
+        String inputLine = null;
+        String outputLine;
+        do {
+            processInput(inputLine);
+            if (inputLine != null && inputLine.equals("closed")) {
+                break;
+            }
+            try{
+                inputLine = in.readLine();
+            }catch(IOException ex) {
+                inputLine = null;
+            }
+        }
+        while(inputLine != null);
+        */
     }
 
-    private static Agent createAgent(){
+    private static Agent createAgent() throws IOException{
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please enter agent name.");
         String name = scanner.nextLine();
@@ -94,7 +126,7 @@ public class Agent {
 
         //this selection takes the user to the item menu for the selected item
         else if (itemSelect > 0 && itemSelect <= itemList.size()){
-            agent.itemMenu(itemList.get(itemSelect - 1));
+            agent.itemMenu(itemList.get(itemSelect - 1), ah);
         }
 
         //this catches any invalid selection and resets the menu for the current auction house
@@ -104,7 +136,7 @@ public class Agent {
         }
     }
 
-    private void itemMenu(String item){
+    private void itemMenu(String item, String ah){
         System.out.println("You have selected the following item: " + item);
         double currentBid = 0;
 
@@ -115,13 +147,13 @@ public class Agent {
 
         //this selection takes user back to pick different item
         if(bid == 0){
-            agent.mainMenu();
+            agent.ahMenu(ah);
         }
 
         //catches if insufficient funds to make selection
         else if (bid > balance){
             System.out.println("Insufficient funds in account to make this bid. Please try again.");
-            agent.itemMenu(item);
+            agent.itemMenu(item, ah);
         }
 
         //catches if bid is not high enough to beat current bid
@@ -162,5 +194,22 @@ public class Agent {
 
     public String toString(){
         return name + ": " + balance;
+    }
+
+    ///////////////////////////////////////////////////////
+
+    private void processInput(String input){
+        if(input != null){
+            String[] inputs = input.split(" ");
+            if(inputs[0].equals("newAuctionHouse:")){
+                auctionHousePorts.add(Integer.parseInt(inputs[1]));
+                System.out.println("New Auction House Available");
+                System.out.println(auctionHousePorts.size()+" Auction Houses Available");
+            }
+        }
+    }
+
+    private void sendMessage(String Message){
+        out.println(Message);
     }
 }
