@@ -9,19 +9,17 @@ import java.util.Scanner;
 
 public class Agent implements Runnable{
     private final Random random = new Random();
-    private final int id;
+    //private final int id;
     private final Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
     private LinkedList<Integer> auctionHousePorts = new LinkedList<>();
-    private LinkedList<Agent> agents = new LinkedList<>();
+    private static LinkedList<Agent> agents = new LinkedList<>();
 
     public Agent() throws IOException {
-        id = random.nextInt(100);
         clientSocket = new Socket("localHost", 4444);
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        out.println("agent "+id);
         Thread thread = new Thread(this);
         thread.start();
     }
@@ -58,6 +56,12 @@ public class Agent implements Runnable{
         out.println(Message);
     }
 
+    private void tranferFunds(){
+        for(Agent agent: agents){
+
+        }
+    }
+
     public static void main(String[] args) throws IOException{
         Scanner input = new Scanner(System.in);
         while (true){
@@ -65,7 +69,15 @@ public class Agent implements Runnable{
                 String inputLine = input.nextLine();
                 switch (inputLine){
                     case "New Agent":
-                        Agent agent = new Agent();
+                        agents.add(new Agent());
+                        
+                        break;
+                    case "tranfer funds":
+                        int initalAccount;
+                        int endingAccount;
+                        System.out.println("Transfer from account number:");
+                        input.nextInt();
+                        System.out.println("Transfer to account number:");
                 }
             }
         }

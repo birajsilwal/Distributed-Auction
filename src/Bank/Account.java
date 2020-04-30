@@ -12,6 +12,16 @@ public class Account implements Runnable {
         balance = balance + amount;
     }
 
+    private boolean sufficientFunds(int amount){return balance >= amount;}
+
+    public void withdraw(int amount){
+        if(sufficientFunds(amount)){
+            balance = balance - amount;
+        }else{
+            System.out.println("Insufficient funds, balance remains unchanged");
+        }
+    }
+
     public Account(int id, ClientType type, Socket socket){
         clientID = id;
         clientType = type;

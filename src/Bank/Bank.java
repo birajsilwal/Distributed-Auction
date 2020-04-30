@@ -14,9 +14,14 @@ public class Bank {
     private static Stack<AuctionHouse> houseStack = new Stack<>();
     private static Stack<Account> houseAccounts = new Stack<>();
     private static Stack<Account> agentAccounts = new Stack<>();
+    private static Stack<Account> accounts = new Stack<>();
     private static Stack<Socket> agentSockets = new Stack<>();
     private static Stack<Socket> houseSockets = new Stack<>();
     private static Stack<Integer> housePortNumbers = new Stack<>();
+
+    private void transferFunds(int withdrawAccount, int depositAccount){
+        
+    }
 
     public static void main(String [] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(4444);
@@ -29,7 +34,8 @@ public class Bank {
             if(inputs[0].equals("agent")){
                 System.out.println(input+" Connected");
                 Account account = new Account(Integer.parseInt(inputs[1]), ClientType.AGENT, clientSocket);
-                agentAccounts.add(account);
+                //agentAccounts.add(account);
+                accounts.add(account);
                 agentSockets.add(clientSocket);
                 if(!housePortNumbers.isEmpty()){
                     for(Integer number: housePortNumbers){
@@ -41,7 +47,8 @@ public class Bank {
             if(inputs[0].equals("auctionhouse:")){
                 System.out.println(input+" Connected");
                 Account account = new Account(Integer.parseInt(inputs[1]), ClientType.AUCTION_HOUSE, clientSocket);
-                houseAccounts.add(account);
+                //houseAccounts.add(account);
+                accounts.add(account);
                 houseSockets.add(clientSocket);
                 housePortNumbers.add(Integer.parseInt(inputs[1]));
                 for(Socket client: agentSockets){
