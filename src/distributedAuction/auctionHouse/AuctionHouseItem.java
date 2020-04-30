@@ -28,5 +28,9 @@ public class AuctionHouseItem {
             return itemDescription;
         }
 
+    public void itemSold(int index) {
+        auctionItemsList.remove(index);
+    }
+
 
 }

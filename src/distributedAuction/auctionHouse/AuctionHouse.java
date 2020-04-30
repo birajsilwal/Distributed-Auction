@@ -23,6 +23,12 @@ public class AuctionHouse {
         auctionHouseBalance += amountFromBank;
     }
 
+    public void createAccount() {
 
+    }
+
+    public void checkBalance() {
+        System.out.println("Your balance is: " + auctionHouseBalance);
+    }
 
 }

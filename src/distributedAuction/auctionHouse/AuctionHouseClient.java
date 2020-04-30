@@ -1,30 +1,50 @@
 package distributedAuction.auctionHouse;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 
 public class AuctionHouseClient implements Runnable {
-    Socket socket;
-    PrintWriter writer;
 
-    AuctionHouseClient() throws IOException {
-        // trying to establish a connection with server into the port 8080
-        socket = new Socket("localhost", 4444);
-        writer = new PrintWriter(socket.getOutputStream());
-        writer.println("AuctionHouse Client");
-        writer.flush();
-    }
+    private Socket socketClient;
+    private PrintWriter output;
+    private DataInputStream inputStream = null;
+    private DataOutputStream outputStream = null;
+    private static final int BANK_PORT = 4444;
+    private BufferedReader input;
 
-
-
-    public static void main(String[] args) {
-
+    AuctionHouseClient() {
 
     }
 
     @Override
     public void run() {
 
+        try{
+            System.out.println("Client started...");
+            // establishes connection to the server port 3000
+            socketClient = new Socket("localhost", BANK_PORT);
+            System.out.println("Connected with the bank.");
+
+            // input takes data from the user
+            input = new BufferedReader(
+                    new InputStreamReader(System.in));
+            System.out.print("Enter your input: ");
+            String str = input.readLine();
+
+            // output sends data to the server
+            // if false, output will not send data to server
+            output = new PrintWriter(socketClient.getOutputStream(), true);
+            output.println(str);
+
+            socketClient.close();
+        }
+        catch(Exception exception) {
+            System.out.println("There is a problem with client.");
+        }
+
+    }
+
+    public synchronized void Terminate() {
+        // terminate the program upon request by the user
     }
 }
