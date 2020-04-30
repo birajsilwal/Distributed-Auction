@@ -1,4 +1,4 @@
-package Bank;
+package distributedAuction.bank;
 
 import java.io.*;
 import java.net.Socket;

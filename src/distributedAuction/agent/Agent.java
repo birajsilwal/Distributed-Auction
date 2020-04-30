@@ -1,4 +1,4 @@
-package AuctionHouse;
+package distributedAuction.agent;
 
 import java.util.LinkedList;
 import java.util.Scanner;
