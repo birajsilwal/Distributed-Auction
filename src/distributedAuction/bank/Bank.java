@@ -37,7 +37,7 @@ public class Bank {
                 agentAccountMap.put(client, account);
                 if(!housePortNumbers.isEmpty()){
                     for(Integer number: housePortNumbers){
-                        out.println("newAuctionHouse: "+number);
+                        out.println("newAH: "+number);
                     }
                 }
             }
@@ -50,7 +50,7 @@ public class Bank {
                 auctionHouseAccountMap.put(client, account);
                 housePortNumbers.add(Integer.parseInt(input[1]));
                 for(BankClient bankClient: agentAccountMap.keySet()){
-                    bankClient.getOut().println("newAuctionHouse: "+input[1]);
+                    bankClient.getOut().println("newAH: "+input[1]);
                 }
             }
         }

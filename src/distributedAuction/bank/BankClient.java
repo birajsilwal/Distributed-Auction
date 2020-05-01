@@ -28,6 +28,9 @@ public class BankClient implements Runnable{
                 case "blockFunds":
                     Account.blockFunds(Integer.parseInt(input[1]));
                     break;
+                case "withdrawFunds":
+                    Account.withdraw(Integer.parseInt(input[1]));
+                    break;
                 case "transfer":
                     //Still working through method
                     break;
