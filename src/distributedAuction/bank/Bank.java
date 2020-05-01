@@ -6,22 +6,19 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 public class Bank {
     private static int agents = 0;
     private static int houses = 0;
-    private static Stack<AuctionHouse> houseStack = new Stack<>();
-    private static Stack<Account> houseAccounts = new Stack<>();
-    private static Stack<Account> agentAccounts = new Stack<>();
-    private static Stack<Account> accounts = new Stack<>();
-    private static Stack<Socket> agentSockets = new Stack<>();
-    private static Stack<Socket> houseSockets = new Stack<>();
-    private static Stack<Integer> housePortNumbers = new Stack<>();
+    private static int accountNumber = 1;
 
-    private void transferFunds(int withdrawAccount, int depositAccount){
-        
-    }
+    private static Map<BankClient, Account> agentAccountMap = new HashMap<>();
+    private static Map<BankClient, Account> auctionHouseAccountMap = new HashMap<>();
+
+    private static Stack<Integer> housePortNumbers = new Stack<>();
 
     public static void main(String [] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(4444);
@@ -29,33 +26,32 @@ public class Bank {
             Socket clientSocket = serverSocket.accept();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-            String input = bufferedReader.readLine();
-            String[] inputs = input.split(" ");
-            if(inputs[0].equals("agent")){
-                System.out.println(input+" Connected");
-                Account account = new Account(Integer.parseInt(inputs[1]), ClientType.AGENT, clientSocket);
-                //agentAccounts.add(account);
-                accounts.add(account);
-                agentSockets.add(clientSocket);
+            String inputLine = bufferedReader.readLine();
+            String[] input = inputLine.split(" ");
+            if(input[0].equals("agent:")){
+                System.out.println(inputLine+" Connected");
+                Account account = new Account(accountNumber);
+                BankClient client = new BankClient(bufferedReader, out, account, Integer.parseInt(input[3]));
+                out.println("accountNumber "+accountNumber);
+                accountNumber++;
+                agentAccountMap.put(client, account);
                 if(!housePortNumbers.isEmpty()){
                     for(Integer number: housePortNumbers){
                         out.println("newAuctionHouse: "+number);
                     }
                 }
-                System.out.println(agentSockets.size()+" agents connected");
             }
-            if(inputs[0].equals("auctionhouse:")){
-                System.out.println(input+" Connected");
-                Account account = new Account(Integer.parseInt(inputs[1]), ClientType.AUCTION_HOUSE, clientSocket);
-                //houseAccounts.add(account);
-                accounts.add(account);
-                houseSockets.add(clientSocket);
-                housePortNumbers.add(Integer.parseInt(inputs[1]));
-                for(Socket client: agentSockets){
-                    PrintWriter tempOut = new PrintWriter(client.getOutputStream(), true);
-                    tempOut.println("newAuctionHouse: "+inputs[1]);
+            if(input[0].equals("auctionhouse:")){
+                System.out.println(inputLine+" Connected");
+                Account account = new Account(accountNumber);
+                BankClient client = new BankClient(bufferedReader, out, account, 0);
+                out.println("accountNumber "+accountNumber);
+                accountNumber++;
+                auctionHouseAccountMap.put(client, account);
+                housePortNumbers.add(Integer.parseInt(input[1]));
+                for(BankClient bankClient: agentAccountMap.keySet()){
+                    bankClient.getOut().println("newAuctionHouse: "+input[1]);
                 }
-                System.out.println(houseSockets.size()+" houses connected");
             }
         }
     }

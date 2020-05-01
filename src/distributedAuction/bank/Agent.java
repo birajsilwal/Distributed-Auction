@@ -3,83 +3,61 @@ package distributedAuction.bank;
 import java.io.*;
 import java.net.Socket;
 import java.util.LinkedList;
-import java.util.Random;
-import java.util.Scanner;
 
 
-public class Agent implements Runnable{
-    private final Random random = new Random();
-    //private final int id;
+public class Agent{
+    private String name;
+    private int balance;
+    private int accountNum;
+
     private final Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
     private LinkedList<Integer> auctionHousePorts = new LinkedList<>();
-    private static LinkedList<Agent> agents = new LinkedList<>();
 
-    public Agent() throws IOException {
+    public Agent(String name, int balance) throws IOException {
+        this.name = name;
+        this.balance = balance;
         clientSocket = new Socket("localHost", 4444);
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        Thread thread = new Thread(this);
-        thread.start();
+        sendMessage("agent: "+name+" balance: "+balance);
     }
 
     private void processInput(String input){
         if(input != null){
             String[] inputs = input.split(" ");
-            if(inputs[0].equals("newAuctionHouse:")){
-                auctionHousePorts.add(Integer.parseInt(inputs[1]));
-                System.out.println("New Auction House Available");
-                System.out.println(auctionHousePorts.size()+" Auction Houses Available");
+            switch (inputs[0]){
+                case "newAH:":
+                    auctionHousePorts.add(Integer.parseInt(inputs[1]));
+                    System.out.println("New Auction House Available");
+                    System.out.println(auctionHousePorts.size()+" Auction Houses Available");
+                    break;
+                case "accountNumber":
+                    accountNum = Integer.parseInt(inputs[1]);
+                    System.out.println("Account number: "+accountNum);
+                    break;
             }
         }
-    }
-
-    @Override
-    public void run() {
-        String inputLine = null;
-        String outputLine;
-        do {
-            processInput(inputLine);
-            if (inputLine != null && inputLine.equals("closed")) {
-                break;
-            }
-            try{
-                inputLine = in.readLine();
-            }catch(IOException ex) {
-                inputLine = null;
-            }
-        }while(inputLine != null);
     }
 
     private void sendMessage(String Message){
         out.println(Message);
     }
 
-    private void tranferFunds(){
-        for(Agent agent: agents){
-
-        }
-    }
-
     public static void main(String[] args) throws IOException{
-        Scanner input = new Scanner(System.in);
-        while (true){
-            if(input.hasNextLine()){
-                String inputLine = input.nextLine();
-                switch (inputLine){
-                    case "New Agent":
-                        agents.add(new Agent());
-                        
-                        break;
-                    case "tranfer funds":
-                        int initalAccount;
-                        int endingAccount;
-                        System.out.println("Transfer from account number:");
-                        input.nextInt();
-                        System.out.println("Transfer to account number:");
-                }
+        Agent agent = new Agent("charley",100000);
+        String inputLine = null;
+        do {
+            agent.processInput(inputLine);
+            if (inputLine != null && inputLine.equals("closed")) {
+                break;
             }
-        }
+            try{
+                inputLine = agent.in.readLine();
+            }catch(IOException ex) {
+                inputLine = null;
+            }
+        }while(inputLine != null);
     }
 }
