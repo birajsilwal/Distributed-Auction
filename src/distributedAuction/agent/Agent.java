@@ -1,10 +1,6 @@
 package distributedAuction.agent;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -14,23 +10,31 @@ public class Agent{
     private String name;
     private double balance;
     private int accountNum;
+    private boolean registered;
 
-    // these variables handle communication with Bank
-    private final Socket clientSocket;
-    private PrintWriter out;
-    private BufferedReader in;
+    // these variables handle communication with Bank and Auction Houses
+    private AgentClient bankClient;
+    private AgentClient ahClient;
 
     // these variables store info about the auction houses
     private LinkedList<Integer> auctionHousePorts = new LinkedList<>();
-    private LinkedList<String> auctionHouses = new LinkedList<>();
     private static LinkedList<String> itemList = new LinkedList<>();
 
+    // constructor for Agent object
     public Agent(String name, double balance) throws IOException{
-        clientSocket = new Socket("localHost", 4444);
-        out = new PrintWriter(clientSocket.getOutputStream(), true);
-        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        final int BANK_PORT = 4444;
+        bankClient = new AgentClient("localHost", BANK_PORT);
+        bankClient.start();
         this.name = name;
         this.balance = balance;
+        try {
+            bankClient.join();
+        }
+        catch (InterruptedException e){
+            e.printStackTrace();
+        }
+
+        sendMessage(bankClient, "agent: "+name+" balance: "+balance);
     }
 
     public static void main(String args[]) throws IOException{
@@ -38,31 +42,22 @@ public class Agent{
         agent = createAgent();
         System.out.println("You have established the following agent: " + agent);
 
-        //open bank account
-        agent.openAccount();
-
-        //get account number
-        //accountNumber = bank.getAccountNumber;
-
         //enter main menu
         agent.mainMenu();
 
-/*
         String inputLine = null;
-        String outputLine;
         do {
-            processInput(inputLine);
+            agent.processInput(inputLine);
             if (inputLine != null && inputLine.equals("closed")) {
                 break;
             }
             try{
-                inputLine = in.readLine();
+                inputLine = agent.bankClient.getInput().readLine();
             }catch(IOException ex) {
                 inputLine = null;
             }
         }
         while(inputLine != null);
-        */
     }
 
     private static Agent createAgent() throws IOException{
@@ -75,38 +70,66 @@ public class Agent{
     }
 
     private void mainMenu(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Input a number to perform the associated action.");
+        System.out.println("Input 0 to terminate session.");
+        System.out.println("Input 1 to see available auction houses.");
+        System.out.println("Input 2 to deposit funds into your account.");
+        int selection = scanner.nextInt();
+
+        switch (selection){
+            case 0:
+                //need to add check to make sure no outstanding auctions
+                agent.terminate();
+                break;
+            case 1:
+                agent.ahSelect();
+                break;
+            case 2:
+                System.out.println("How much would you like to deposit?");
+                int deposit = scanner.nextInt();
+                sendMessage(bankClient,"deposit " + deposit);
+                System.out.println("Deposited $" + deposit + " into your account.");
+                agent.mainMenu();
+                break;
+            default:
+                System.out.println("Invalid selection, please try again.");
+                agent.mainMenu();
+                break;
+        }
+    }
+
+    private void ahSelect(){
         int counter = 1;
-        //auctionHouses = bank.getAuctionHouses;
         System.out.println("The following auction houses are available: ");
-        for(String ah : auctionHouses){
+        for(int ah : auctionHousePorts){
             System.out.println(counter + ". " + ah);
             counter++;
         }
         Scanner scanner = new Scanner(System.in);
         System.out.println("Input a number to connect to the associated auction house.");
-        System.out.println("Otherwise input 0 to terminate session.");
+        System.out.println("Input 0 to return to main menu.");
         int ahSelect = scanner.nextInt();
 
-        //this selection terminates the program
+        //this selection returns user to main menu
         if(ahSelect == 0){
-            //need to add check to make sure no outstanding auctions
-
-            agent.terminate();
+            agent.mainMenu();
         }
 
         //this selection takes user to the AH menu for the selected AH
-        else if (ahSelect > 0 && ahSelect <= auctionHouses.size()){
-            agent.ahMenu(auctionHouses.get(ahSelect - 1));
+        else if (ahSelect > 0 && ahSelect <= auctionHousePorts.size()){
+            agent.connectToAH("localHost", auctionHousePorts.get(ahSelect - 1));
+            agent.ahMenu(auctionHousePorts.get(ahSelect - 1));
         }
 
         //this catches any invalid selection and re-displays the list of AHs
         else{
             System.out.println("Invalid selection, please try again.");
-            agent.mainMenu();
+            agent.ahSelect();
         }
     }
 
-    private void ahMenu(String ah){
+    private void ahMenu(int ah){
         int counter = 1;
         //itemList = ah.getItems;
         System.out.println("The following items are available for bid: ");
@@ -136,7 +159,7 @@ public class Agent{
         }
     }
 
-    private void itemMenu(String item, String ah){
+    private void itemMenu(String item, int ah){
         System.out.println("You have selected the following item: " + item);
         double currentBid = 0;
 
@@ -163,53 +186,72 @@ public class Agent{
 
         //this condition is triggered if the bid is valid
         else{
-            blockFunds(bid);
             placeBid(item, bid);
         }
     }
 
-    private void placeBid(String item, double bid){
-
+    private void connectToAH(String ip, int port){
+        ahClient = new AgentClient(ip, port);
+        ahClient.start();
+        try {
+            ahClient.join();
+        }
+        catch (InterruptedException e){
+            e.printStackTrace();
+        }
     }
 
-    private void openAccount(){
-
+    private void placeBid(String item, double bid){
+        sendMessage(bankClient, "bid " + item + " " + bid);
     }
 
     private void blockFunds(double amount){
-
+        sendMessage(bankClient, "block " + amount);
     }
 
-    private void transferFunds(){
-
+    private void transferFunds(double amount, String ah){
+        sendMessage(bankClient, "transfer " + amount + " " + ah);
     }
 
     private void deregister(){
-
+        sendMessage(bankClient,"deregister " + accountNum);
     }
 
     private void terminate(){
-
+        if(registered){
+            deregister();
+        }
+        else{
+            System.exit(0);
+        }
     }
 
     public String toString(){
         return name + ": " + balance;
     }
 
-    ///////////////////////////////////////////////////////
-
     private void processInput(String input){
         if(input != null){
             String[] inputs = input.split(" ");
-            if(inputs[0].equals("newAuctionHouse:")){
-                auctionHousePorts.add(Integer.parseInt(inputs[1]));
-                System.out.println("New Auction House Available");
-                System.out.println(auctionHousePorts.size()+" Auction Houses Available");
+            switch (inputs[0]){
+                case "newAH:":
+                    auctionHousePorts.add(Integer.parseInt(inputs[1]));
+                    System.out.println("New Auction House Available");
+                    System.out.println(auctionHousePorts.size()+" Auction Houses Available");
+                    break;
+                case "accountNumber":
+                    accountNum = Integer.parseInt(inputs[1]);
+                    System.out.println("Account number: "+accountNum);
+                    agent.registered = true;
+                    break;
+                case "deregistered":
+                    agent.registered = false;
+                    agent.terminate();
             }
         }
     }
 
-    private void sendMessage(String Message){
-        out.println(Message);
+    private void sendMessage(AgentClient recipient, String message){
+        recipient.getOutput().println(message);
     }
 }
