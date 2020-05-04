@@ -13,22 +13,36 @@ public class AuctionHouse {
     private double auctionHouseBalance;
     private double amountFromBank;
     private String agentName;
+    private int auctionHouseId;
+
+    AuctionHouse() {
+
+    }
 
 
     public void registerWithBank(int auctionHouseAccount, double auctionHouseBalance ) {
         auctionHouseBalance = 0;
     }
 
+    public void deregisterWithBank() {
+        //when agent terminates, it deregister with the bank
+    }
+
     public void updateBalance(int auctionHouseAccount, double amountFromBank) {
         auctionHouseBalance += amountFromBank;
     }
 
-    public void createAccount() {
-
-    }
 
     public void checkBalance() {
         System.out.println("Your balance is: " + auctionHouseBalance);
+    }
+
+    public void createAuctionHouse() {
+        // upon creation, register with bank, open account with zero balance
+    }
+
+    public int getAuctionHouseId() {
+        return auctionHouseId;
     }
 
 }

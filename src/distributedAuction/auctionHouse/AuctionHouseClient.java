@@ -47,4 +47,6 @@ public class AuctionHouseClient implements Runnable {
     public synchronized void Terminate() {
         // terminate the program upon request by the user
     }
+
+
 }
