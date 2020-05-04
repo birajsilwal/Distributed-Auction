@@ -18,7 +18,7 @@ public class AuctionHouse{
 
     public AuctionHouse() throws IOException {
         Random random = new Random();
-        int portNumber = random.nextInt(10000);
+        int portNumber = 4445;//random.nextInt(10000);
         balance = 0;
         serverSocket = new ServerSocket(portNumber);
         clientSocket = new Socket("localHost", 4444);

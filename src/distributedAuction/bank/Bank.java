@@ -17,6 +17,7 @@ public class Bank {
 
     private static Map<BankClient, Account> agentAccountMap = new HashMap<>();
     private static Map<BankClient, Account> auctionHouseAccountMap = new HashMap<>();
+    private static Map<Integer, Account> housePortAccountMap = new HashMap<>();
 
     private static Stack<Integer> housePortNumbers = new Stack<>();
 
@@ -31,7 +32,9 @@ public class Bank {
             if(input[0].equals("agent:")){
                 System.out.println(inputLine+" Connected");
                 Account account = new Account(accountNumber);
-                BankClient client = new BankClient(bufferedReader, out, account, Integer.parseInt(input[3]));
+                BankClient client = new BankClient(ClientType.AGENT,
+                        bufferedReader, out, account, Integer.parseInt(input[3]),
+                        housePortAccountMap);
                 out.println("accountNumber "+accountNumber);
                 accountNumber++;
                 agentAccountMap.put(client, account);
@@ -44,11 +47,12 @@ public class Bank {
             if(input[0].equals("auctionhouse:")){
                 System.out.println(inputLine+" Connected");
                 Account account = new Account(accountNumber);
-                BankClient client = new BankClient(bufferedReader, out, account, 0);
+                BankClient client = new BankClient(ClientType.AUCTION_HOUSE, bufferedReader, out, account, 0);
                 out.println("accountNumber "+accountNumber);
                 accountNumber++;
                 auctionHouseAccountMap.put(client, account);
                 housePortNumbers.add(Integer.parseInt(input[1]));
+                housePortAccountMap.put(Integer.parseInt(input[1]), account);
                 for(BankClient bankClient: agentAccountMap.keySet()){
                     bankClient.getOut().println("newAH: "+input[1]);
                 }

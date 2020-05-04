@@ -3,16 +3,32 @@ package distributedAuction.bank;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 
 public class BankClient implements Runnable{
-    private Account Account;
+    private ClientType clientType;
+    private Account account;
     private BufferedReader in;
     private PrintWriter out;
+    private Map<Integer, Account> houseAccounts;
 
-    public BankClient(BufferedReader in, PrintWriter out, Account account, int startingBalance){
+    public BankClient(ClientType clientType, BufferedReader in, PrintWriter out, Account account, int startingBalance,
+                      Map<Integer, Account> houseAccounts){
+        this.clientType = clientType;
         this.in = in;
         this.out = out;
-        Account = account;
+        this.account = account;
+        this.houseAccounts = houseAccounts;
+        account.deposit(startingBalance);
+        Thread thread = new Thread(this);
+        thread.start();
+    }
+
+    public BankClient(ClientType clientType, BufferedReader in, PrintWriter out, Account account, int startingBalance){
+        this.clientType = clientType;
+        this.in = in;
+        this.out = out;
+        this.account = account;
         account.deposit(startingBalance);
         Thread thread = new Thread(this);
         thread.start();
@@ -23,16 +39,21 @@ public class BankClient implements Runnable{
             String[] input = inputLine.split(" ");
             switch (input[0]){
                 case "deposit":
-                    Account.deposit(Integer.parseInt(input[1]));
+                    account.deposit(Integer.parseInt(input[1]));
                     break;
                 case "blockFunds":
-                    Account.blockFunds(Integer.parseInt(input[1]));
+                    account.blockFunds(Integer.parseInt(input[1]));
                     break;
                 case "withdrawFunds":
-                    Account.withdraw(Integer.parseInt(input[1]));
+                    account.withdraw(Integer.parseInt(input[1]));
                     break;
                 case "transfer":
-                    //Still working through method
+                    int portNumber = Integer.parseInt(input[3]);
+                    System.out.println("Starting Balance: "+houseAccounts.get(portNumber).getAvailableBalance());
+                    //withdraw the funds from the starting account
+                    account.withdraw(Integer.parseInt(input[1]));
+                    //deposit funds into the ending account
+                    houseAccounts.get(portNumber).deposit(Integer.parseInt(input[1]));
                     break;
             }
         }

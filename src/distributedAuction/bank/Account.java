@@ -19,7 +19,7 @@ public class Account{
     public void withdraw(int amount){
         if(sufficientFunds(amount)){
             availableBalance = availableBalance - amount;
-            System.out.println("Withdrew "+amount+" from account");
+            System.out.println("Withdrew "+amount+" from account. Balance=$"+availableBalance);
         }else{
             System.out.println("Insufficient funds, available balance remains unchanged");
         }
