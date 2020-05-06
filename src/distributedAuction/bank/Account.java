@@ -2,21 +2,21 @@ package distributedAuction.bank;
 
 public class Account{
     private int clientID;
-    private int availableBalance;
-    private int blockedBalance;
+    private double availableBalance;
+    private double blockedBalance;
 
-    public void deposit(int amount){
+    public void deposit(double amount){
         availableBalance = availableBalance + amount;
         System.out.println("Deposited $"+amount+" new balance: "+availableBalance);
     }
 
-    public int getAvailableBalance() {
+    public double getAvailableBalance() {
         return availableBalance;
     }
 
-    private boolean sufficientFunds(int amount){return availableBalance >= amount;}
+    private boolean sufficientFunds(double amount){return availableBalance >= amount;}
 
-    public void withdraw(int amount){
+    public void withdraw(double amount){
         if(sufficientFunds(amount)){
             availableBalance = availableBalance - amount;
             System.out.println("Withdrew "+amount+" from account. Balance=$"+availableBalance);
@@ -25,7 +25,7 @@ public class Account{
         }
     }
 
-    public void blockFunds(int amount){
+    public void blockFunds(double amount){
         if(sufficientFunds(amount)){
             blockedBalance = amount;
             availableBalance = availableBalance - amount;

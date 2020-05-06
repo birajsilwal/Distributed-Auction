@@ -18,13 +18,12 @@ public class AuctionHouse{
 
     public AuctionHouse() throws IOException {
         Random random = new Random();
-        int portNumber = 4445;//random.nextInt(10000);
         balance = 0;
-        serverSocket = new ServerSocket(portNumber);
-        clientSocket = new Socket("localHost", 4444);
+        serverSocket = new ServerSocket();
+        clientSocket = new Socket("10.20.10.242", 4444);
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        sendMessage("auctionhouse: "+portNumber);
+        sendMessage("auctionhouse: "+serverSocket.getLocalSocketAddress()+" "+serverSocket.getLocalPort());
     }
 
     private void processInput(String inputLine){

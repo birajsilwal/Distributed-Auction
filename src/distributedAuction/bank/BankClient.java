@@ -12,7 +12,7 @@ public class BankClient implements Runnable{
     private PrintWriter out;
     private Map<Integer, Account> houseAccounts;
 
-    public BankClient(ClientType clientType, BufferedReader in, PrintWriter out, Account account, int startingBalance,
+    public BankClient(ClientType clientType, BufferedReader in, PrintWriter out, Account account, double startingBalance,
                       Map<Integer, Account> houseAccounts){
         this.clientType = clientType;
         this.in = in;
