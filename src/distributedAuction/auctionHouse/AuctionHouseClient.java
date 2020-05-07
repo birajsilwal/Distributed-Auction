@@ -3,6 +3,7 @@ package distributedAuction.auctionHouse;
 import java.io.*;
 import java.net.Socket;
 
+//Auction house is client of Bank
 public class AuctionHouseClient implements Runnable {
 
     private Socket socketClient;
@@ -21,7 +22,7 @@ public class AuctionHouseClient implements Runnable {
 
         try{
             System.out.println("Client started...");
-            // establishes connection to the server port 3000
+            // establishes connection to the server port 4444
             socketClient = new Socket("localhost", BANK_PORT);
             System.out.println("Connected with the bank.");
 

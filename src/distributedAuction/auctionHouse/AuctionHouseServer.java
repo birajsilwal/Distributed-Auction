@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+//Auction House is server for Agent
 public class AuctionHouseServer implements Runnable {
 
     private InputStreamReader inputReader;
