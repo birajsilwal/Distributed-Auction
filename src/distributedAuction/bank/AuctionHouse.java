@@ -17,7 +17,6 @@ public class AuctionHouse{
     private BufferedReader in;
 
     public AuctionHouse() throws IOException {
-        Random random = new Random();
         balance = 0;
         serverSocket = new ServerSocket();
         clientSocket = new Socket("10.20.10.242", 4444);

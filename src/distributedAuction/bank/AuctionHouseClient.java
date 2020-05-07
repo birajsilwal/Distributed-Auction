@@ -23,6 +23,14 @@ public class AuctionHouseClient extends Bank implements Runnable{
         thread.start();
     }
 
+    public boolean matchHost(String hostname){
+        return this.hostname.equals(hostname);
+    }
+
+    public boolean matchPortNumber(int portNumber){
+        return this.portNumber == portNumber;
+    }
+
     @Override
     public void run() {
         String inputLine = null;

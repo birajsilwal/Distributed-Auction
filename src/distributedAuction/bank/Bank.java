@@ -6,9 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 public class Bank {
     private static int agents = 0;
@@ -19,6 +17,19 @@ public class Bank {
     private static Map<AuctionHouseClient, Account> auctionHouseAccountMap = new HashMap<>();
 
     private static Stack<Integer> housePortNumbers = new Stack<>();
+
+    private Account getAuctionHouseAccount(String hostname, int portNumber){
+        for(AuctionHouseClient client: auctionHouseAccountMap.keySet()){
+            if(client.matchHost(hostname) && client.matchPortNumber(portNumber)){
+                return client.getAccount();
+            }
+        }
+        return null;
+    }
+
+    private void transferFunds(Account from, Account to){
+        to.deposit(from.withdrawBlockedFunds());
+    }
 
     protected void processAgentInput(String inputLine, AgentClient client){
         if(inputLine != null){
@@ -31,15 +42,15 @@ public class Bank {
                     client.getAccount().blockFunds(Integer.parseInt(input[1]));
                     break;
                 case "withdrawFunds":
-                    client.getAccount().withdraw(Integer.parseInt(input[1]));
+                    //client.getAccount().withdraw(Integer.parseInt(input[1]));
                     break;
                 case "transfer":
-                    int portNumber = Integer.parseInt(input[3]);
-                    //System.out.println("Starting Balance: "+houseAccounts.get(portNumber).getAvailableBalance());
-                    //withdraw the funds from the starting account
-                    client.getAccount().withdraw(Integer.parseInt(input[1]));
-                    //deposit funds into the ending account
-                    //houseAccounts.get(portNumber).deposit(Integer.parseInt(input[1]));
+                    Account houseAccount = getAuctionHouseAccount(input[3], Integer.parseInt(input[4]));
+                    if(houseAccount != null){
+                        transferFunds(client.getAccount(), houseAccount);
+                    }else{
+                        System.out.println("Sorry that account doesn't exist");
+                    }
                     break;
             }
         }
@@ -58,15 +69,7 @@ public class Bank {
                     client.getAccount().blockFunds(Integer.parseInt(input[1]));
                     break;
                 case "withdrawFunds":
-                    client.getAccount().withdraw(Integer.parseInt(input[1]));
-                    break;
-                case "transfer":
-                    int portNumber = Integer.parseInt(input[3]);
-                    //System.out.println("Starting Balance: "+houseAccounts.get(portNumber).getAvailableBalance());
-                    //withdraw the funds from the starting account
-                    //account.withdraw(Integer.parseInt(input[1]));
-                    //deposit funds into the ending account
-                    //houseAccounts.get(portNumber).deposit(Integer.parseInt(input[1]));
+                    //client.getAccount().withdraw(Integer.parseInt(input[1]));
                     break;
             }
         }
