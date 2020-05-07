@@ -2,7 +2,11 @@ package distributedAuction.auctionHouse;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.net.Inet4Address;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AuctionHouse {
 
@@ -14,9 +18,18 @@ public class AuctionHouse {
     private double amountFromBank;
     private String agentName;
     private int auctionHouseId;
+    private String hostIpAddress;
+    private String hostPortAddress;
+    private AuctionHouseClient auctionHouseClient;
+    private AuctionHouseServer auctionHouseServer;
+    private List<AuctionHouseItem> auctionHouseItems;
 
-    AuctionHouse() {
-        // creating auction house
+    AuctionHouse() throws UnknownHostException {
+        auctionHouseItems = new ArrayList<>();
+        auctionHouseClient = new AuctionHouseClient();
+        auctionHouseServer = new AuctionHouseServer();
+        hostIpAddress = ("Host IP Address is: " + Inet4Address.getLocalHost().getHostAddress());
+        hostPortAddress = ("Host Port Address is: " + auctionHouseServer.getAuctionHouseServerPort());
     }
 
 
@@ -37,9 +50,6 @@ public class AuctionHouse {
         System.out.println("Your balance is: " + auctionHouseBalance);
     }
 
-    public void createAuctionHouse() {
-        // upon creation, register with bank, open account with zero balance
-    }
 
     public int getAuctionHouseId() {
         return auctionHouseId;
@@ -50,6 +60,12 @@ public class AuctionHouse {
 
 
     // adding items into the list
+    public void addItem() {
+        auctionHouseItems.add(new AuctionHouseItem("xbox", 100, "like new"));
+        auctionHouseItems.add(new AuctionHouseItem("violin", 2000, "antique"));
+        auctionHouseItems.add(new AuctionHouseItem("iphone X", 300, "like new"));
+
+    }
 
     public void initializeAuctionHouse() {
         // initialization of auction house
