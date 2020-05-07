@@ -23,7 +23,7 @@ public class Agent{
     // constructor for Agent object
     public Agent(String name, double balance) throws IOException{
         final int BANK_PORT = 4444;
-        bankClient = new AgentClient("localHost", BANK_PORT);
+        bankClient = new AgentClient("10.20.10.242", BANK_PORT);
         bankClient.start();
         this.name = name;
         this.balance = balance;
