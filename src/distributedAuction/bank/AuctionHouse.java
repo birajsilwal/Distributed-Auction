@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Random;
@@ -18,11 +19,11 @@ public class AuctionHouse{
 
     public AuctionHouse() throws IOException {
         balance = 0;
-        serverSocket = new ServerSocket();
+        serverSocket = new ServerSocket(4445);
         clientSocket = new Socket("10.20.10.242", 4444);
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        sendMessage("auctionhouse: "+serverSocket.getLocalSocketAddress()+" "+serverSocket.getLocalPort());
+        sendMessage("auctionhouse: "+Inet4Address.getLocalHost().getHostAddress()+" "+serverSocket.getLocalPort());
     }
 
     private void processInput(String inputLine){
