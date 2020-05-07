@@ -5,21 +5,19 @@ import java.util.TimerTask;
 
 /*AuctionTrack keeps track of auction*/
 public class  AuctionTracker implements Runnable {
-    private int minBid;
     private int currBid;
     private int timeToOvertakeBid;
+    private Boolean biddingStatusIsBidding;
+    private Boolean biddingStatusItemIsSold;
 
     AuctionTracker() {
         // need to update minBid and currBid
-        minBid = 0;
         currBid = 0;
         timeToOvertakeBid = 30; // 30 sec
+        biddingStatusIsBidding = false;
+        biddingStatusItemIsSold = false;
     }
 
-
-    public int getMinBid() {
-        return minBid;
-    }
 
     public int getCurrBid() {
         return currBid;
@@ -45,6 +43,14 @@ public class  AuctionTracker implements Runnable {
         if (timeToOvertakeBid == 0) {
             System.out.println("Congratulations!!! Bid Successful.");
         }
+    }
+
+    public Boolean getBiddingStatusIsBidding() {
+        return biddingStatusIsBidding;
+    }
+
+    public Boolean getBiddingStatusItemIsSold() {
+        return biddingStatusItemIsSold;
     }
 
 

@@ -16,11 +16,11 @@ public class AuctionHouse {
     private int auctionHouseId;
 
     AuctionHouse() {
-
+        // creating auction house
     }
 
 
-    public void registerWithBank(int auctionHouseAccount, double auctionHouseBalance ) {
+    public void registerWithBank(int auctionHouseAccount, double auctionHouseBalance) {
         auctionHouseBalance = 0;
     }
 
@@ -43,6 +43,16 @@ public class AuctionHouse {
 
     public int getAuctionHouseId() {
         return auctionHouseId;
+    }
+
+
+    // menu/ list of commands to display for users
+
+
+    // adding items into the list
+
+    public void initializeAuctionHouse() {
+        // initialization of auction house
     }
 
 }
