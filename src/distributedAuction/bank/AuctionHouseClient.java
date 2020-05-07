@@ -3,17 +3,16 @@ package distributedAuction.bank;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Map;
 
 public class AuctionHouseClient extends Bank implements Runnable{
-    private String hostname;
+    private String hostAddress;
     private int portNumber;
     private Account account;
     private BufferedReader in;
     private PrintWriter out;
 
-    public AuctionHouseClient(String hostname, int portNumber, BufferedReader in, PrintWriter out, Account account, double startingBalance){
-        this.hostname = hostname;
+    public AuctionHouseClient(String hostAddress, int portNumber, BufferedReader in, PrintWriter out, Account account, double startingBalance){
+        this.hostAddress = hostAddress;
         this.portNumber = portNumber;
         this.in = in;
         this.out = out;
@@ -23,8 +22,8 @@ public class AuctionHouseClient extends Bank implements Runnable{
         thread.start();
     }
 
-    public boolean matchHost(String hostname){
-        return this.hostname.equals(hostname);
+    public boolean matchHost(String hostAddress){
+        return this.hostAddress.equals(hostAddress);
     }
 
     public boolean matchPortNumber(int portNumber){
@@ -45,6 +44,14 @@ public class AuctionHouseClient extends Bank implements Runnable{
                 inputLine = null;
             }
         }while(inputLine != null);
+    }
+
+    public String getHostAddress() {
+        return hostAddress;
+    }
+
+    public int getPortNumber() {
+        return portNumber;
     }
 
     public Account getAccount() {
