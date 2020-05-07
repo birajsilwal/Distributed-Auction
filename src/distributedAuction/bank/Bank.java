@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
@@ -15,8 +16,6 @@ public class Bank {
 
     private static Map<AgentClient, Account> agentAccountMap = new HashMap<>();
     private static Map<AuctionHouseClient, Account> auctionHouseAccountMap = new HashMap<>();
-
-    private static Stack<Integer> housePortNumbers = new Stack<>();
 
     private Account getAuctionHouseAccount(String hostname, int portNumber){
         for(AuctionHouseClient client: auctionHouseAccountMap.keySet()){
@@ -90,10 +89,8 @@ public class Bank {
                 out.println("accountNumber "+accountNumber);
                 accountNumber++;
                 agentAccountMap.put(client, account);
-                if(!housePortNumbers.isEmpty()){
-                    for(Integer number: housePortNumbers){
-                        out.println("newAH: "+number);
-                    }
+                for(AuctionHouseClient auctionHouseClient: auctionHouseAccountMap.keySet()){
+                    out.println("newAH: "+auctionHouseClient.getHostAddress()+" "+auctionHouseClient.getPortNumber());
                 }
             }
             if(input[0].equals("auctionhouse:")){
