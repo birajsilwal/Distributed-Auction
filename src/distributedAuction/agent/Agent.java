@@ -27,12 +27,6 @@ public class Agent{
         bankClient.start();
         this.name = name;
         this.balance = balance;
-        try {
-            bankClient.join();
-        }
-        catch (InterruptedException e){
-            e.printStackTrace();
-        }
 
         sendMessage(bankClient, "agent: "+name+" balance: "+balance);
     }
@@ -55,7 +49,7 @@ public class Agent{
         return new Agent(name, balance);
     }
 
-    private void mainMenu(){
+    private void mainMenu() throws IOException{
         Scanner scanner = new Scanner(System.in);
         System.out.println("Input a number to perform the associated action.");
         System.out.println("Input 0 to terminate session.");
@@ -85,7 +79,7 @@ public class Agent{
         }
     }
 
-    private void ahSelect(){
+    private void ahSelect() throws IOException{
         int counter = 1;
         System.out.println("The following auction houses are available: ");
         for(int ah : auctionHouses){
@@ -115,7 +109,7 @@ public class Agent{
         }
     }
 
-    private void ahMenu(int ah){
+    private void ahMenu(int ah) throws IOException{
         int counter = 1;
         //itemList = ah.getItems;
         System.out.println("The following items are available for bid: ");
@@ -145,7 +139,7 @@ public class Agent{
         }
     }
 
-    private void itemMenu(String item, int ah){
+    private void itemMenu(String item, int ah) throws IOException {
         System.out.println("You have selected the following item: " + item);
         double currentBid = 0;
 
@@ -176,7 +170,7 @@ public class Agent{
         }
     }
 
-    private void connectToAH(String ip, int port){
+    private void connectToAH(String ip, int port) throws IOException {
         ahClient = new AgentClient(ip, port, agent);
         ahClient.start();
         try {

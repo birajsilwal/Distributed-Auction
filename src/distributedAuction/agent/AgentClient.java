@@ -14,28 +14,17 @@ public class AgentClient extends Thread {
     private PrintWriter out;
     private BufferedReader in;
 
-    public AgentClient(String ip, int port, Agent agent){
+    public AgentClient(String ip, int port, Agent agent) throws IOException {
         this.ip = ip;
         this.port = port;
         this.agent = agent;
-    }
-
-    private void startClient(){
-        try{
-            Socket socket = new Socket(ip, port);
-            out = new PrintWriter(socket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        }
-        catch (IOException e){
-            e.getStackTrace();
-        }
+        Socket socket = new Socket(ip, port);
+        out = new PrintWriter(socket.getOutputStream(), true);
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
 
     @Override
     public void run(){
-        startClient();
-        super.run();
-
         String inputLine = null;
         do {
             processInput(inputLine);
@@ -44,7 +33,8 @@ public class AgentClient extends Thread {
             }
             try{
                 inputLine = in.readLine();
-            }catch(IOException ex) {
+            }
+            catch(IOException ex) {
                 inputLine = null;
             }
         }
