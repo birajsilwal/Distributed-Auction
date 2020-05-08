@@ -9,21 +9,21 @@ public class Agent{
     private static Agent agent;
     private String name;
     private double balance;
-    private int accountNum;
-    private boolean registered;
+    protected int accountNum;
+    protected boolean registered;
 
     // these variables handle communication with Bank and Auction Houses
     private AgentClient bankClient;
     private AgentClient ahClient;
 
     // these variables store info about the auction houses
-    private LinkedList<Integer> auctionHouses = new LinkedList<>();
+    protected LinkedList<Integer> auctionHouses = new LinkedList<>();
     private static LinkedList<String> itemList = new LinkedList<>();
 
     // constructor for Agent object
     public Agent(String name, double balance) throws IOException{
         final int BANK_PORT = 4444;
-        bankClient = new AgentClient("10.20.10.242", BANK_PORT);
+        bankClient = new AgentClient("10.20.10.242", BANK_PORT, this);
         bankClient.start();
         this.name = name;
         this.balance = balance;
@@ -44,20 +44,6 @@ public class Agent{
 
         //enter main menu
         agent.mainMenu();
-
-        String inputLine = null;
-        do {
-            agent.processInput(inputLine);
-            if (inputLine != null && inputLine.equals("closed")) {
-                break;
-            }
-            try{
-                inputLine = agent.bankClient.getInput().readLine();
-            }catch(IOException ex) {
-                inputLine = null;
-            }
-        }
-        while(inputLine != null);
     }
 
     private static Agent createAgent() throws IOException{
@@ -70,20 +56,6 @@ public class Agent{
     }
 
     private void mainMenu(){
-        String inputLine = null;
-        do {
-            agent.processInput(inputLine);
-            if (inputLine != null && inputLine.equals("closed")) {
-                break;
-            }
-            try{
-                inputLine = agent.bankClient.getInput().readLine();
-            }catch(IOException ex) {
-                inputLine = null;
-            }
-        }
-        while(inputLine != null);
-
         Scanner scanner = new Scanner(System.in);
         System.out.println("Input a number to perform the associated action.");
         System.out.println("Input 0 to terminate session.");
@@ -114,20 +86,6 @@ public class Agent{
     }
 
     private void ahSelect(){
-        String inputLine = null;
-        do {
-            agent.processInput(inputLine);
-            if (inputLine != null && inputLine.equals("closed")) {
-                break;
-            }
-            try{
-                inputLine = agent.bankClient.getInput().readLine();
-            }catch(IOException ex) {
-                inputLine = null;
-            }
-        }
-        while(inputLine != null);
-
         int counter = 1;
         System.out.println("The following auction houses are available: ");
         for(int ah : auctionHouses){
@@ -158,20 +116,6 @@ public class Agent{
     }
 
     private void ahMenu(int ah){
-        String inputLine = null;
-        do {
-            agent.processInput(inputLine);
-            if (inputLine != null && inputLine.equals("closed")) {
-                break;
-            }
-            try{
-                inputLine = agent.bankClient.getInput().readLine();
-            }catch(IOException ex) {
-                inputLine = null;
-            }
-        }
-        while(inputLine != null);
-
         int counter = 1;
         //itemList = ah.getItems;
         System.out.println("The following items are available for bid: ");
@@ -202,20 +146,6 @@ public class Agent{
     }
 
     private void itemMenu(String item, int ah){
-        String inputLine = null;
-        do {
-            agent.processInput(inputLine);
-            if (inputLine != null && inputLine.equals("closed")) {
-                break;
-            }
-            try{
-                inputLine = agent.bankClient.getInput().readLine();
-            }catch(IOException ex) {
-                inputLine = null;
-            }
-        }
-        while(inputLine != null);
-
         System.out.println("You have selected the following item: " + item);
         double currentBid = 0;
 
@@ -247,7 +177,7 @@ public class Agent{
     }
 
     private void connectToAH(String ip, int port){
-        ahClient = new AgentClient(ip, port);
+        ahClient = new AgentClient(ip, port, agent);
         ahClient.start();
         try {
             ahClient.join();
@@ -290,7 +220,7 @@ public class Agent{
         terminate();
     }
 
-    private void terminate(){
+    protected void terminate(){
         if(registered){
             deregister();
         }

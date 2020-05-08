@@ -10,12 +10,14 @@ public class AgentClient extends Thread {
 
     private String ip;
     private int port;
+    private Agent agent;
     private PrintWriter out;
     private BufferedReader in;
 
-    public AgentClient(String ip, int port){
+    public AgentClient(String ip, int port, Agent agent){
         this.ip = ip;
         this.port = port;
+        this.agent = agent;
     }
 
     private void startClient(){
@@ -33,6 +35,41 @@ public class AgentClient extends Thread {
     public void run(){
         startClient();
         super.run();
+
+        String inputLine = null;
+        do {
+            processInput(inputLine);
+            if (inputLine != null && inputLine.equals("closed")) {
+                break;
+            }
+            try{
+                inputLine = in.readLine();
+            }catch(IOException ex) {
+                inputLine = null;
+            }
+        }
+        while(inputLine != null);
+    }
+
+    private void processInput(String input){
+        if(input != null){
+            String[] inputs = input.split(" ");
+            switch (inputs[0]){
+                case "newAH:":
+                    agent.auctionHouses.add(Integer.parseInt(inputs[1]));
+                    System.out.println("New Auction House Available");
+                    System.out.println(agent.auctionHouses.size()+" Auction Houses Available");
+                    break;
+                case "accountNumber":
+                    agent.accountNum = Integer.parseInt(inputs[1]);
+                    System.out.println("Account number: "+ agent.accountNum);
+                    agent.registered = true;
+                    break;
+                case "deregistered":
+                    agent.registered = false;
+                    agent.terminate();
+            }
+        }
     }
 
     public PrintWriter getOutput(){
