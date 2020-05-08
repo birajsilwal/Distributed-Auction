@@ -76,6 +76,7 @@ public class Bank {
 
     public static void main(String [] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(4444);
+        System.out.println("Main Bank at address: "+Inet4Address.getLocalHost().getHostAddress());
         while (true){
             Socket clientSocket = serverSocket.accept();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));

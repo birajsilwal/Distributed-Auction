@@ -18,7 +18,7 @@ public class Agent{
     public Agent(String name, int balance) throws IOException {
         this.name = name;
         this.balance = balance;
-        clientSocket = new Socket("10.20.10.242", 4444);
+        clientSocket = new Socket("10.20.10.167", 4444);
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         sendMessage("agent: "+name+" balance: "+balance);
