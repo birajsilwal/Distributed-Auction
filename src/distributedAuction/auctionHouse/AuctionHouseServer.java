@@ -54,4 +54,18 @@ public class AuctionHouseServer implements Runnable {
         return serverSocket.getLocalPort();
     }
 
+
+    public synchronized void Terminate() {
+        System.out.println("Terminating the program...");
+        System.out.println("Deregistering auction house with the bank.");
+        try {
+            socket.close();
+        }
+        catch (Exception e) {
+            System.out.println("Error while terminating.");
+            System.out.println("Hint: The program should not allow" +
+                    " exit when there are still bids to be resolved.");
+        }
+    }
+
 }
