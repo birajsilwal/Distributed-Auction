@@ -17,7 +17,7 @@ public class Agent{
     private AgentClient ahClient;
 
     // these variables store info about the auction houses
-    private LinkedList<Integer> auctionHousePorts = new LinkedList<>();
+    private LinkedList<Integer> auctionHouses = new LinkedList<>();
     private static LinkedList<String> itemList = new LinkedList<>();
 
     // constructor for Agent object
@@ -70,6 +70,20 @@ public class Agent{
     }
 
     private void mainMenu(){
+        String inputLine = null;
+        do {
+            agent.processInput(inputLine);
+            if (inputLine != null && inputLine.equals("closed")) {
+                break;
+            }
+            try{
+                inputLine = agent.bankClient.getInput().readLine();
+            }catch(IOException ex) {
+                inputLine = null;
+            }
+        }
+        while(inputLine != null);
+
         Scanner scanner = new Scanner(System.in);
         System.out.println("Input a number to perform the associated action.");
         System.out.println("Input 0 to terminate session.");
@@ -100,9 +114,23 @@ public class Agent{
     }
 
     private void ahSelect(){
+        String inputLine = null;
+        do {
+            agent.processInput(inputLine);
+            if (inputLine != null && inputLine.equals("closed")) {
+                break;
+            }
+            try{
+                inputLine = agent.bankClient.getInput().readLine();
+            }catch(IOException ex) {
+                inputLine = null;
+            }
+        }
+        while(inputLine != null);
+
         int counter = 1;
         System.out.println("The following auction houses are available: ");
-        for(int ah : auctionHousePorts){
+        for(int ah : auctionHouses){
             System.out.println(counter + ". " + ah);
             counter++;
         }
@@ -117,9 +145,9 @@ public class Agent{
         }
 
         //this selection takes user to the AH menu for the selected AH
-        else if (ahSelect > 0 && ahSelect <= auctionHousePorts.size()){
-            agent.connectToAH("localHost", auctionHousePorts.get(ahSelect - 1));
-            agent.ahMenu(auctionHousePorts.get(ahSelect - 1));
+        else if (ahSelect > 0 && ahSelect <= auctionHouses.size()){
+            agent.connectToAH("localHost", auctionHouses.get(ahSelect - 1));
+            agent.ahMenu(auctionHouses.get(ahSelect - 1));
         }
 
         //this catches any invalid selection and re-displays the list of AHs
@@ -130,6 +158,20 @@ public class Agent{
     }
 
     private void ahMenu(int ah){
+        String inputLine = null;
+        do {
+            agent.processInput(inputLine);
+            if (inputLine != null && inputLine.equals("closed")) {
+                break;
+            }
+            try{
+                inputLine = agent.bankClient.getInput().readLine();
+            }catch(IOException ex) {
+                inputLine = null;
+            }
+        }
+        while(inputLine != null);
+
         int counter = 1;
         //itemList = ah.getItems;
         System.out.println("The following items are available for bid: ");
@@ -160,6 +202,20 @@ public class Agent{
     }
 
     private void itemMenu(String item, int ah){
+        String inputLine = null;
+        do {
+            agent.processInput(inputLine);
+            if (inputLine != null && inputLine.equals("closed")) {
+                break;
+            }
+            try{
+                inputLine = agent.bankClient.getInput().readLine();
+            }catch(IOException ex) {
+                inputLine = null;
+            }
+        }
+        while(inputLine != null);
+
         System.out.println("You have selected the following item: " + item);
         double currentBid = 0;
 
@@ -209,12 +265,29 @@ public class Agent{
         sendMessage(bankClient, "block " + amount);
     }
 
-    private void transferFunds(double amount, String ah){
-        sendMessage(bankClient, "transfer " + amount + " " + ah);
+    private void transferFunds(double amount, String ahPort){
+        sendMessage(bankClient, "transfer " + amount + " " + ahPort);
     }
 
     private void deregister(){
-        sendMessage(bankClient,"deregister " + accountNum);
+        sendMessage(bankClient,"deregister");
+
+        String inputLine = null;
+        do {
+            agent.processInput(inputLine);
+            if (inputLine != null && inputLine.equals("closed")) {
+                break;
+            }
+            try{
+                inputLine = agent.bankClient.getInput().readLine();
+            }catch(IOException ex) {
+                inputLine = null;
+            }
+        }
+        while(inputLine != null);
+
+        registered = false;
+        terminate();
     }
 
     private void terminate(){
@@ -235,9 +308,9 @@ public class Agent{
             String[] inputs = input.split(" ");
             switch (inputs[0]){
                 case "newAH:":
-                    auctionHousePorts.add(Integer.parseInt(inputs[1]));
+                    auctionHouses.add(Integer.parseInt(inputs[1]));
                     System.out.println("New Auction House Available");
-                    System.out.println(auctionHousePorts.size()+" Auction Houses Available");
+                    System.out.println(auctionHouses.size()+" Auction Houses Available");
                     break;
                 case "accountNumber":
                     accountNum = Integer.parseInt(inputs[1]);
