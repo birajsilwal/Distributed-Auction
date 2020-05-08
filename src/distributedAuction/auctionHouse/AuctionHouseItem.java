@@ -11,10 +11,11 @@ public class AuctionHouseItem {
     private List<AuctionHouseItem> auctionItemsList;
     private int minBid;
 
-    AuctionHouseItem(String itemName, int minBid, int itemId) {
+    AuctionHouseItem(String itemName, int minBid, String itemDescription) {
         this.itemName = itemName;
         this.itemId = itemId;
         this.minBid = minBid;
+        this.itemDescription = itemDescription;
     }
 
     /**@return name of an item*/

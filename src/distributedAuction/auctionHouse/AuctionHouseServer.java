@@ -15,10 +15,10 @@ public class AuctionHouseServer implements Runnable {
     private PrintWriter output;
     private ServerSocket serverSocket;
     private Socket socket;
-    private final static int AGENT_PORT = 1111;
+    private int auctionHouseServerPort;
 
     AuctionHouseServer() {
-
+        auctionHouseServerPort = 9999;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class AuctionHouseServer implements Runnable {
 
         try {
             System.out.println("Waiting for client to connect...");
-            serverSocket = new ServerSocket(AGENT_PORT);
+            serverSocket = new ServerSocket(auctionHouseServerPort);
             socket = serverSocket.accept();
             System.out.println("Client connection established.");
 
@@ -49,4 +49,9 @@ public class AuctionHouseServer implements Runnable {
         }
 
     }
+
+    public int getAuctionHouseServerPort() {
+        return serverSocket.getLocalPort();
+    }
+
 }
