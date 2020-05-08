@@ -21,11 +21,13 @@ public class AgentClient extends Bank implements Runnable{
 
     @Override
     public void run() {
+        System.out.println("Agent thread is running");
         String inputLine = null;
         do {
             processAgentInput(inputLine, this);
-            if (inputLine != null && inputLine.equals("closed")) {
-                break;
+            if (inputLine != null && inputLine.contains("deregister")) {
+                System.out.println("Agent thread has been stopped");
+                return;
             }
             try{
                 inputLine = in.readLine();

@@ -20,10 +20,10 @@ public class AuctionHouse{
     public AuctionHouse() throws IOException {
         balance = 0;
         serverSocket = new ServerSocket(4445);
-        clientSocket = new Socket("10.20.10.242", 4444);
+        clientSocket = new Socket("10.20.10.167", 4444);
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        sendMessage("auctionhouse: "+Inet4Address.getLocalHost().getHostAddress()+" "+serverSocket.getLocalPort());
+        sendMessage("auctionhouse: "+Inet4Address.getLocalHost().getHostAddress());
     }
 
     private void processInput(String inputLine){

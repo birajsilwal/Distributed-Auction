@@ -32,11 +32,13 @@ public class AuctionHouseClient extends Bank implements Runnable{
 
     @Override
     public void run() {
+        System.out.println("Auction House thread is running");
         String inputLine = null;
         do {
             processAuctionHouseInput(inputLine, this);
-            if (inputLine != null && inputLine.equals("closed")) {
-                break;
+            if (inputLine != null && inputLine.contains("deregister")) {
+                System.out.println("Auction House thread has been stopped");
+                return;
             }
             try{
                 inputLine = in.readLine();
