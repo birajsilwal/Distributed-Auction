@@ -6,14 +6,12 @@ import java.io.PrintWriter;
 
 public class AuctionHouseClient extends Bank implements Runnable{
     private String hostAddress;
-    private int portNumber;
     private Account account;
     private BufferedReader in;
     private PrintWriter out;
 
-    public AuctionHouseClient(String hostAddress, int portNumber, BufferedReader in, PrintWriter out, Account account, double startingBalance){
+    public AuctionHouseClient(String hostAddress, BufferedReader in, PrintWriter out, Account account, double startingBalance){
         this.hostAddress = hostAddress;
-        this.portNumber = portNumber;
         this.in = in;
         this.out = out;
         this.account = account;
@@ -24,10 +22,6 @@ public class AuctionHouseClient extends Bank implements Runnable{
 
     public boolean matchHost(String hostAddress){
         return this.hostAddress.equals(hostAddress);
-    }
-
-    public boolean matchPortNumber(int portNumber){
-        return this.portNumber == portNumber;
     }
 
     @Override
@@ -50,10 +44,6 @@ public class AuctionHouseClient extends Bank implements Runnable{
 
     public String getHostAddress() {
         return hostAddress;
-    }
-
-    public int getPortNumber() {
-        return portNumber;
     }
 
     public Account getAccount() {

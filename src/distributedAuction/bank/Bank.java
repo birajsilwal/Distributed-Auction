@@ -16,10 +16,11 @@ public class Bank {
 
     private static Map<AgentClient, Account> agentAccountMap = new HashMap<>();
     private static Map<AuctionHouseClient, Account> auctionHouseAccountMap = new HashMap<>();
+    private static Map<Integer, Account> accountMap = new HashMap<>();
 
-    private Account getAuctionHouseAccount(String hostname, int portNumber){
+    private Account getAuctionHouseAccount(String hostname){
         for(AuctionHouseClient client: auctionHouseAccountMap.keySet()){
-            if(client.matchHost(hostname) && client.matchPortNumber(portNumber)){
+            if(client.matchHost(hostname)){
                 return client.getAccount();
             }
         }
@@ -35,13 +36,17 @@ public class Bank {
             String[] input = inputLine.split(" ");
             switch (input[0]){
                 case "deposit":
-                    client.getAccount().deposit(Integer.parseInt(input[1]));
+                    int depositAmount = Integer.parseInt(input[1]);
+                    client.getAccount().deposit(depositAmount);
+                    client.getOut().println("Deposited $"+depositAmount+" new balance $"+client.getAccount().getAvailableBalance());
                     break;
                 case "blockFunds":
-                    client.getAccount().blockFunds(Integer.parseInt(input[1]));
+                    int blockAmount = Integer.parseInt(input[1]);
+                    client.getAccount().blockFunds(blockAmount);
+                    client.getOut().println("Blocked $"+blockAmount);
                     break;
                 case "transfer":
-                    Account houseAccount = getAuctionHouseAccount(input[3], Integer.parseInt(input[4]));
+                    Account houseAccount = getAuctionHouseAccount(input[3]);
                     if(houseAccount != null){
                         transferFunds(client.getAccount(), houseAccount);
                     }else{
@@ -50,6 +55,7 @@ public class Bank {
                     break;
                 case "deregister":
                     agentAccountMap.remove(client);
+                    accountMap.remove(client.getAccount().getAccountNum());
                     break;
             }
         }
@@ -65,10 +71,13 @@ public class Bank {
                     client.getAccount().deposit(Integer.parseInt(input[1]));
                     break;
                 case "blockFunds":
-                    client.getAccount().blockFunds(Integer.parseInt(input[1]));
+                    int blockAmount = Integer.parseInt(input[1]);
+                    client.getAccount().blockFunds(blockAmount);
+                    client.getOut().println("Blocked $"+blockAmount);
                     break;
                 case "deregister":
                     auctionHouseAccountMap.remove(client);
+                    accountMap.remove(client.getAccount().getAccountNum());
                     break;
             }
         }
@@ -86,23 +95,25 @@ public class Bank {
             if(input[0].equals("agent:")){
                 System.out.println(inputLine+" Connected");
                 Account account = new Account(accountNumber);
+                accountMap.put(accountNumber, account);
                 AgentClient client = new AgentClient(bufferedReader, out, account, Double.parseDouble(input[3]));
                 out.println("accountNumber "+accountNumber);
                 accountNumber++;
                 agentAccountMap.put(client, account);
                 for(AuctionHouseClient auctionHouseClient: auctionHouseAccountMap.keySet()){
-                    out.println("newAH: "+auctionHouseClient.getHostAddress()+" "+auctionHouseClient.getPortNumber());
+                    out.println("newAH: "+auctionHouseClient.getHostAddress());
                 }
             }
             if(input[0].equals("auctionhouse:")){
                 System.out.println(inputLine+" Connected");
                 Account account = new Account(accountNumber);
-                AuctionHouseClient client = new AuctionHouseClient(input[1], Integer.parseInt(input[2]), bufferedReader, out, account, 0);
+                accountMap.put(accountNumber, account);
+                AuctionHouseClient client = new AuctionHouseClient(input[1], bufferedReader, out, account, 0);
                 out.println("accountNumber "+accountNumber);
                 accountNumber++;
                 auctionHouseAccountMap.put(client, account);
                 for(AgentClient agentClient: agentAccountMap.keySet()){
-                    agentClient.getOut().println("newAH: "+input[1]+" "+input[2]);
+                    agentClient.getOut().println("newAH: "+input[1]);
                 }
             }
         }

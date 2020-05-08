@@ -3,11 +3,14 @@ package distributedAuction.bank;
 import java.io.*;
 import java.net.Socket;
 import java.util.LinkedList;
+import java.util.Scanner;
 
 
 public class Agent{
+    private static Agent agent;
+    private static Scanner scanner = new Scanner(System.in);
     private String name;
-    private int balance;
+    private double balance;
     private int accountNum;
 
     private final Socket clientSocket;
@@ -15,7 +18,7 @@ public class Agent{
     private BufferedReader in;
     private LinkedList<Integer> auctionHousePorts = new LinkedList<>();
 
-    public Agent(String name, int balance) throws IOException {
+    public Agent(String name, double balance) throws IOException {
         this.name = name;
         this.balance = balance;
         clientSocket = new Socket("10.20.10.167", 4444);
@@ -41,11 +44,27 @@ public class Agent{
         }
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
+    }
+
     private void sendMessage(String Message){
         out.println(Message);
     }
 
+    private void createAgent(){
+        System.out.println("Please enter your name");
+        agent.setName(scanner.nextLine());
+        System.out.println("Please enter your starting balance");
+        //agent.setBalance(scanner.nextDouble());
+    }
+
     public static void main(String[] args) throws IOException{
+
         Agent agent = new Agent("charley",100000);
         String inputLine = null;
         do {
