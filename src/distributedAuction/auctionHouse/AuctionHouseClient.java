@@ -48,7 +48,16 @@ public class AuctionHouseClient implements Runnable {
     }
 
     public synchronized void Terminate() {
-        // terminate the program upon request by the user
+        System.out.println("Terminating the program...");
+        System.out.println("Deregistering auction house with the bank.");
+        try {
+            socketClient.close();
+        }
+        catch (Exception e) {
+            System.out.println("Error while terminating.");
+            System.out.println("Hint: The program should not allow" +
+                    " exit when there are still bids to be resolved.");
+        }
     }
 
 
