@@ -40,9 +40,6 @@ public class Bank {
                 case "blockFunds":
                     client.getAccount().blockFunds(Integer.parseInt(input[1]));
                     break;
-                case "withdrawFunds":
-                    //client.getAccount().withdraw(Integer.parseInt(input[1]));
-                    break;
                 case "transfer":
                     Account houseAccount = getAuctionHouseAccount(input[3], Integer.parseInt(input[4]));
                     if(houseAccount != null){
@@ -50,6 +47,9 @@ public class Bank {
                     }else{
                         System.out.println("Sorry that account doesn't exist");
                     }
+                    break;
+                case "deregister":
+                    agentAccountMap.remove(client);
                     break;
             }
         }
@@ -67,8 +67,8 @@ public class Bank {
                 case "blockFunds":
                     client.getAccount().blockFunds(Integer.parseInt(input[1]));
                     break;
-                case "withdrawFunds":
-                    //client.getAccount().withdraw(Integer.parseInt(input[1]));
+                case "deregister":
+                    auctionHouseAccountMap.remove(client);
                     break;
             }
         }

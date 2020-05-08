@@ -1,7 +1,9 @@
 package distributedAuction.auctionHouse;
 
 import java.io.*;
+import java.net.Inet4Address;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 //Auction house is client of Bank
 public class AuctionHouseClient implements Runnable {

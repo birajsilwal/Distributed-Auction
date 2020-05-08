@@ -22,7 +22,6 @@ public class Agent{
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         sendMessage("agent: "+name+" balance: "+balance);
-        sendMessage("transfer 100 to 4445");
     }
 
     private void processInput(String input){
