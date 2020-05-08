@@ -37,20 +37,6 @@ public class AuctionHouse {
         auctionHouseBalance = 0;
     }
 
-    public void deregisterWithBank() {
-        //when agent terminates, it deregister with the bank
-    }
-
-    public void updateBalance(int auctionHouseAccount, double amountFromBank) {
-        auctionHouseBalance += amountFromBank;
-    }
-
-
-    public void checkBalance() {
-        System.out.println("Your balance is: " + auctionHouseBalance);
-    }
-
-
     public int getAuctionHouseId() {
         return auctionHouseId;
     }
