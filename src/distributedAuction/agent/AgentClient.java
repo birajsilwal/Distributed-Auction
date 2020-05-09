@@ -9,14 +9,12 @@ import java.net.Socket;
 public class AgentClient extends Thread {
 
     private String ip;
-    private int port;
     private Agent agent;
     private PrintWriter out;
     private BufferedReader in;
 
     public AgentClient(String ip, int port, Agent agent) throws IOException {
         this.ip = ip;
-        this.port = port;
         this.agent = agent;
         Socket socket = new Socket(ip, port);
         out = new PrintWriter(socket.getOutputStream(), true);
@@ -44,20 +42,43 @@ public class AgentClient extends Thread {
     private void processInput(String input){
         if(input != null){
             String[] inputs = input.split(" ");
+            Double bid = Double.parseDouble(inputs[1]);
+            String item = inputs[2];
             switch (inputs[0]){
                 case "newAH:":
-                    agent.auctionHouses.add(Integer.parseInt(inputs[1]));
+                    agent.auctionHouseIPs.add(inputs[1]);
                     System.out.println("New Auction House Available");
-                    System.out.println(agent.auctionHouses.size()+" Auction Houses Available");
+                    System.out.println(agent.auctionHouseIPs.size()+" Auction Houses Available");
                     break;
-                case "accountNumber":
+                case "accountNumber:":
                     agent.accountNum = Integer.parseInt(inputs[1]);
                     System.out.println("Account number: "+ agent.accountNum);
                     agent.registered = true;
                     break;
-                case "deregistered":
-                    agent.registered = false;
-                    agent.terminate();
+                case "accept:":
+                    agent.blockFunds(bid);
+                    System.out.println("Your bid of " + bid + " for " + item +
+                            "was accepted. You will be notified if you win.");
+                    break;
+                case "reject:":
+                    agent.unblockFunds(bid);
+                    System.out.println("Your bid of " + bid + " for " + item +
+                            "was rejected. Please bid on another item.");
+                    System.out.println("Your money will be refunded. Please bid on another item.");
+                    break;
+                case "outbid:":
+                    Double highBid = Double.parseDouble(inputs[2]);
+                    agent.unblockFunds(bid);
+                    System.out.println("Your bid of " + bid + " for " + item +
+                            "was just outbid with a bid of " + highBid + ".");
+                    System.out.println("Your money will be refunded. Please bid on another item.");
+                    break;
+                case "winner:":
+                    agent.transferFunds(bid, ip);
+                    System.out.println("Your bid of " + bid + " for " + item + " was the highest bid.");
+                    System.out.println("You have won the auction. Your money will be transferred to the auction house. " +
+                            "Please bid on another item.");
+                    break;
             }
         }
     }
