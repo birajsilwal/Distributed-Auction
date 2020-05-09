@@ -54,7 +54,8 @@ public class AuctionHouse {
     }
 
     public void initializeAuctionHouse() {
-        // initialization of auction house
+        addItem();
+        auctionHouseClient.run();
     }
 
     public void processBankInput(String input) {
@@ -67,6 +68,10 @@ public class AuctionHouse {
                     System.out.println("Host IP Address is: " +  getPortNumber());
             }
         }
+    }
+
+    public void processAgentInput() {
+
     }
 
     public String getHostAddress() {
