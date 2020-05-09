@@ -35,9 +35,15 @@ public class Account{
         }
     }
 
-    public void unblockFunds(){
-        availableBalance = availableBalance + blockedBalance;
-        blockedBalance = 0;
+    public void unblockFunds(double amount){
+        if(amount <= blockedBalance){
+            availableBalance = availableBalance + amount;
+            blockedBalance = blockedBalance - amount;
+        }else{
+            System.out.println("Client tried to unblock more funds that were previously blocked. All funds have been unblocked");
+            availableBalance = availableBalance + blockedBalance;
+            blockedBalance = 0;
+        }
     }
 
     private void updateTotalBalance(){

@@ -36,17 +36,22 @@ public class Bank {
             String[] input = inputLine.split(" ");
             switch (input[0]){
                 case "deposit":
-                    int depositAmount = Integer.parseInt(input[1]);
+                    double depositAmount = Double.parseDouble(input[1]);
                     client.getAccount().deposit(depositAmount);
                     client.getOut().println("Deposited $"+depositAmount+" new balance $"+client.getAccount().getAvailableBalance());
                     break;
                 case "blockFunds":
-                    int blockAmount = Integer.parseInt(input[1]);
+                    double blockAmount = Double.parseDouble(input[1]);
                     client.getAccount().blockFunds(blockAmount);
                     client.getOut().println("Blocked $"+blockAmount);
                     break;
+                case "unblockFunds":
+                    double unblockAmount = Double.parseDouble(input[1]);
+                    client.getAccount().unblockFunds(unblockAmount);
+                    client.getOut().println("Unblocked funds, new available balance: $"+client.getAccount().getAvailableBalance());
+                    break;
                 case "transfer":
-                    Account houseAccount = getAuctionHouseAccount(input[3]);
+                    Account houseAccount = accountMap.get(Integer.parseInt(input[2]));
                     if(houseAccount != null){
                         transferFunds(client.getAccount(), houseAccount);
                     }else{
@@ -61,19 +66,24 @@ public class Bank {
         }
     }
 
-
-
     protected void processAuctionHouseInput(String inputLine, AuctionHouseClient client){
         if(inputLine != null){
             String[] input = inputLine.split(" ");
             switch (input[0]){
                 case "deposit":
-                    client.getAccount().deposit(Integer.parseInt(input[1]));
+                    double depositAmount = Double.parseDouble(input[1]);
+                    client.getAccount().deposit(depositAmount);
+                    client.getOut().println("Deposited $"+depositAmount+" new balance $"+client.getAccount().getAvailableBalance());
                     break;
                 case "blockFunds":
-                    int blockAmount = Integer.parseInt(input[1]);
+                    double blockAmount = Double.parseDouble(input[1]);
                     client.getAccount().blockFunds(blockAmount);
                     client.getOut().println("Blocked $"+blockAmount);
+                    break;
+                case "unblockFunds":
+                    double unblockAmount = Double.parseDouble(input[1]);
+                    client.getAccount().unblockFunds(unblockAmount);
+                    client.getOut().println("Unblocked funds, new available balance: $"+client.getAccount().getAvailableBalance());
                     break;
                 case "deregister":
                     auctionHouseAccountMap.remove(client);
