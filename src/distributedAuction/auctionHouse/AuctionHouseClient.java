@@ -5,27 +5,29 @@ import java.net.Inet4Address;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-//Auction house is client of Bank
+/*AuctionHouseClient is client of Bank, auction house is connected to bank's
+* server via socket port 3000*/
 public class AuctionHouseClient implements Runnable {
 
+    // socketClient is socket of AuctionHouse
     private Socket socketClient;
-    private DataInputStream inputStream = null;
-    private DataOutputStream outputStream = null;
+    // BANK_PORT is port of the bank
     private static final int BANK_PORT = 3000;
+    // input is used to take input from bank
     private BufferedReader input;
+    // output is used to send data back to the bank's server
     private PrintWriter output;
 
     AuctionHouseClient() {
 
     }
 
-
+    /*Socket connection is happening here as well as bank's input is parsed here*/
     @Override
     public void run() {
-
         try{
             System.out.println("Client started...");
-            // establishes connection to the server port 4444
+            // establishes connection to the bank's server port
             socketClient = new Socket("localhost", BANK_PORT);
             System.out.println("Connected with the bank.");
 
@@ -54,6 +56,7 @@ public class AuctionHouseClient implements Runnable {
 
     }
 
+    /*this method terminated the socket connection with bank upon the request of user*/
     public synchronized void Terminate() {
         System.out.println("Terminating the program...");
         System.out.println("Deregistering auction house with the bank.");
@@ -67,6 +70,7 @@ public class AuctionHouseClient implements Runnable {
         }
     }
 
+    /**@param input is passed as Bank's input and prints out stuff */
     public void processBankInput(String input) throws IOException {
         if (input != null) {
             String[] temp = input.split(" ");

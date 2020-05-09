@@ -10,40 +10,29 @@ import java.util.List;
 
 public class AuctionHouse {
 
-    private int auctionHouseAccount;
-    private double auctionHouseBalance;
-    private double amountFromBank;
-    private int auctionHouseId;
-    private String hostIpAddress;
-    private int hostPortAddress;
     private AuctionHouseClient auctionHouseClient;
     private AuctionHouseServer auctionHouseServer;
     private List<String> auctionHouseItems;
+    private final int auctionHouseServerPort = 9999;
 
     AuctionHouse() throws UnknownHostException {
         auctionHouseItems = new ArrayList<>();
         addItem();
-        auctionHouseClient = new AuctionHouseClient();
-        hostIpAddress = Inet4Address.getLocalHost().getHostAddress();
     }
-
-    public int getAuctionHouseId() {
-        return auctionHouseId;
-    }
-
 
     // adding items into the list
     public void addItem() {
         auctionHouseItems.add(String.valueOf(new AuctionHouseItem("xbox", 100, "like new")));
         auctionHouseItems.add(String.valueOf(new AuctionHouseItem("violin", 2000, "antique")));
         auctionHouseItems.add(String.valueOf(new AuctionHouseItem("iphone X", 300, "like new")));
+        auctionHouseItems.add(String.valueOf(new AuctionHouseItem("s20", 800, "like new")));
 
     }
 
-
     public void initializeAuctionHouse() throws UnknownHostException {
+        auctionHouseClient = new AuctionHouseClient();
+        auctionHouseServer = new AuctionHouseServer(auctionHouseServerPort);
         auctionHouseClient.run();
-        AuctionHouseServer auctionHouseServer = new AuctionHouseServer();
         auctionHouseServer.run();
     }
 
@@ -51,17 +40,6 @@ public class AuctionHouse {
     public List<String> getAuctionHouseItems() {
         return auctionHouseItems;
     }
-
-
-
-    public String getHostAddress() {
-        return hostIpAddress;
-    }
-
-    public int getPortNumber() {
-        return hostPortAddress;
-    }
-
 
     public static void main(String[] args) throws UnknownHostException {
         AuctionHouse auctionHouse = new AuctionHouse();

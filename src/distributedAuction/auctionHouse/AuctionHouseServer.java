@@ -10,19 +10,24 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
 
-//Auction House is server for Agent
+/*AuctionHouseServer is server for Agent. Port 9999 is used for all
+* auction house server but host address is different */
 public class AuctionHouseServer extends AuctionHouse implements Runnable {
 
-    private InputStreamReader inputReader;
+    // input is used to get input from agent
     private BufferedReader input;
+    // output is used to send data back to the agent
     private PrintWriter output;
+    // serverSocket is required for server
     private ServerSocket serverSocket;
+    // socket is used for communication
     private Socket socket;
+    // port for AuctionHouse Server
     private int auctionHouseServerPort;
 
-    AuctionHouseServer() throws UnknownHostException {
+    AuctionHouseServer(int auctionHouseServerPort) throws UnknownHostException {
         super();
-        auctionHouseServerPort = 9999;
+        this.auctionHouseServerPort = auctionHouseServerPort;
     }
 
     @Override
