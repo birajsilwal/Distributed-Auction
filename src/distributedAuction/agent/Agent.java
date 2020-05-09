@@ -15,7 +15,7 @@ public class Agent{
     // these variables handle communication with Bank and Auction Houses
     private AgentClient bankClient;
     private AgentClient ahClient;
-    private String bankIP;
+    private static String bankIP;
     final int BANK_PORT = 4444;
     final int AH_PORT = 9999;
 
@@ -24,17 +24,17 @@ public class Agent{
     private static LinkedList<String> itemList = new LinkedList<>();
 
     // constructor for Agent object
-    public Agent(String name, double balance, String bankIP) throws IOException{
+    public Agent(String name, double balance) throws IOException{
         bankClient = new AgentClient(bankIP, BANK_PORT, this);
         bankClient.start();
         this.name = name;
         this.balance = balance;
-        this.bankIP = bankIP;
 
         sendMessage(bankClient, "agent: "+name+" balance: "+balance);
     }
 
     public static void main(String args[]) throws IOException{
+        bankIP = args[0];
         //create agent with user input from console
         agent = createAgent();
         System.out.println("You have established the following agent: " + agent);
@@ -51,7 +51,7 @@ public class Agent{
         double balance = scanner.nextDouble();
         System.out.println("Please enter the IP address of the bank that you would like to connect to.");
         String bankIP = scanner.nextLine();
-        return new Agent(name, balance, bankIP);
+        return new Agent(name, balance);
     }
 
     private void mainMenu() throws IOException{
