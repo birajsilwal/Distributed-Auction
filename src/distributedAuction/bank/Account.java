@@ -1,7 +1,7 @@
 package distributedAuction.bank;
 
 public class Account{
-    private int clientID;
+    private int accountNum;
     private double availableBalance;
     private double blockedBalance;
     private double totalBalance;
@@ -45,8 +45,12 @@ public class Account{
     }
 
     public Account(int number){
-        clientID = number;
+        accountNum = number;
         availableBalance = 0;
         System.out.println("Bank account: "+number+" has been opened");
+    }
+
+    public int getAccountNum() {
+        return accountNum;
     }
 }

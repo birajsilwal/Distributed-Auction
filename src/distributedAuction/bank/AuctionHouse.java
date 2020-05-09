@@ -7,7 +7,6 @@ import java.io.PrintWriter;
 import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Random;
 
 public class AuctionHouse{
     private int balance;
@@ -17,15 +16,21 @@ public class AuctionHouse{
     private PrintWriter out;
     private BufferedReader in;
 
+    //Creates a new auctionHouse on the client IP address with the standard port
     public AuctionHouse() throws IOException {
         balance = 0;
+        //Sets up the server for the auction house
         serverSocket = new ServerSocket(4445);
+        //Connects as a client to the bank
         clientSocket = new Socket("10.20.10.167", 4444);
+        //sets up readers and writers for the input output streams
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        //Tells the bank what address it's on so that agents may connect
         sendMessage("auctionhouse: "+Inet4Address.getLocalHost().getHostAddress());
     }
 
+    //Handles messages sent to the auctionHouse from the bank.
     private void processInput(String inputLine){
         if(inputLine != null){
             String[] input = inputLine.split(" ");
@@ -37,6 +42,7 @@ public class AuctionHouse{
         }
     }
 
+    //Uses the printwriter to send string messages to the bank.
     private void sendMessage(String Message){out.println(Message);}
 
     public static void main(String[] args) throws IOException{
