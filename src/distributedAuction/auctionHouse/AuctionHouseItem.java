@@ -2,7 +2,7 @@ package distributedAuction.auctionHouse;
 
 import java.util.List;
 
-/*AuctionHouseItem */
+/*AuctionHouseItem is an item object */
 public class AuctionHouseItem {
 
     private String itemName;
@@ -38,14 +38,6 @@ public class AuctionHouseItem {
         auctionItemsList.remove(index);
     }
 
-    public List<AuctionHouseItem> getAuctionItemsList() {
-        return auctionItemsList;
-    }
-
-    public void getOfferedItems() {
-
-    }
-
     public int getMinBid() {
         return minBid;
     }
@@ -54,7 +46,5 @@ public class AuctionHouseItem {
         return "Item Name: " + itemName + ", minBid: " +
                 minBid + ", item description: " + itemDescription;
     }
-
-
 
 }
