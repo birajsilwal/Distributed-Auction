@@ -15,15 +15,17 @@ public class Agent{
     // these variables handle communication with Bank and Auction Houses
     private AgentClient bankClient;
     private AgentClient ahClient;
+    private static String bankIP;
+    final int BANK_PORT = 4444;
+    final int AH_PORT = 9999;
 
     // these variables store info about the auction houses
-    protected LinkedList<Integer> auctionHouses = new LinkedList<>();
+    protected LinkedList<String> auctionHouseIPs = new LinkedList<>();
     private static LinkedList<String> itemList = new LinkedList<>();
 
     // constructor for Agent object
     public Agent(String name, double balance) throws IOException{
-        final int BANK_PORT = 4444;
-        bankClient = new AgentClient("10.20.10.242", BANK_PORT, this);
+        bankClient = new AgentClient(bankIP, BANK_PORT, this);
         bankClient.start();
         this.name = name;
         this.balance = balance;
@@ -32,6 +34,7 @@ public class Agent{
     }
 
     public static void main(String args[]) throws IOException{
+        bankIP = args[0];
         //create agent with user input from console
         agent = createAgent();
         System.out.println("You have established the following agent: " + agent);
@@ -46,6 +49,8 @@ public class Agent{
         String name = scanner.nextLine();
         System.out.println("Agent name is " + name + ". Please enter starting balance.");
         double balance = scanner.nextDouble();
+        System.out.println("Please enter the IP address of the bank that you would like to connect to.");
+        String bankIP = scanner.nextLine();
         return new Agent(name, balance);
     }
 
@@ -82,7 +87,7 @@ public class Agent{
     private void ahSelect() throws IOException{
         int counter = 1;
         System.out.println("The following auction houses are available: ");
-        for(int ah : auctionHouses){
+        for(String ah : auctionHouseIPs){
             System.out.println(counter + ". " + ah);
             counter++;
         }
@@ -97,9 +102,9 @@ public class Agent{
         }
 
         //this selection takes user to the AH menu for the selected AH
-        else if (ahSelect > 0 && ahSelect <= auctionHouses.size()){
-            agent.connectToAH("localHost", auctionHouses.get(ahSelect - 1));
-            agent.ahMenu(auctionHouses.get(ahSelect - 1));
+        else if (ahSelect > 0 && ahSelect <= auctionHouseIPs.size()){
+            agent.connectToAH(auctionHouseIPs.get(ahSelect - 1), AH_PORT);
+            agent.ahMenu(auctionHouseIPs.get(ahSelect - 1));
         }
 
         //this catches any invalid selection and re-displays the list of AHs
@@ -109,7 +114,7 @@ public class Agent{
         }
     }
 
-    private void ahMenu(int ah) throws IOException{
+    private void ahMenu(String ah) throws IOException{
         int counter = 1;
         //itemList = ah.getItems;
         System.out.println("The following items are available for bid: ");
@@ -139,7 +144,7 @@ public class Agent{
         }
     }
 
-    private void itemMenu(String item, int ah) throws IOException {
+    private void itemMenu(String item, String ah) throws IOException {
         System.out.println("You have selected the following item: " + item);
         double currentBid = 0;
 
@@ -181,16 +186,23 @@ public class Agent{
         }
     }
 
-    private void placeBid(String item, double bid){
-        sendMessage(bankClient, "bid " + item + " " + bid);
+    private void placeBid(String item, double bid) throws IOException{
+        sendMessage(ahClient, "bid: " + item + " " + bid);
+        System.out.println("You have submitted a bid of $" + bid + " on " +item+".");
+        System.out.println("Returning to main menu.");
+        mainMenu();
     }
 
-    private void blockFunds(double amount){
+    protected void blockFunds(double amount){
         sendMessage(bankClient, "block " + amount);
     }
 
-    private void transferFunds(double amount, String ahPort){
-        sendMessage(bankClient, "transfer " + amount + " " + ahPort);
+    protected void unblockFunds(double amount){
+        sendMessage(bankClient, "unblock " + amount);
+    }
+
+    protected void transferFunds(double amount, String ahIP){
+        sendMessage(bankClient, "transfer: " + amount + " " + ahIP);
     }
 
     private void deregister(){
@@ -231,19 +243,12 @@ public class Agent{
         if(input != null){
             String[] inputs = input.split(" ");
             switch (inputs[0]){
-                case "newAH:":
-                    auctionHouses.add(Integer.parseInt(inputs[1]));
-                    System.out.println("New Auction House Available");
-                    System.out.println(auctionHouses.size()+" Auction Houses Available");
-                    break;
-                case "accountNumber":
-                    accountNum = Integer.parseInt(inputs[1]);
-                    System.out.println("Account number: "+accountNum);
-                    agent.registered = true;
-                    break;
                 case "deregistered":
                     agent.registered = false;
                     agent.terminate();
+                    break;
+                default:
+                    break;
             }
         }
     }
