@@ -10,31 +10,21 @@ import java.util.List;
 
 public class AuctionHouse {
 
-    private DataInputStream inputStream;
-    private DataOutputStream outputStream;
-    private Socket socket;
     private int auctionHouseAccount;
     private double auctionHouseBalance;
     private double amountFromBank;
-    private String agentName;
     private int auctionHouseId;
     private String hostIpAddress;
     private int hostPortAddress;
     private AuctionHouseClient auctionHouseClient;
     private AuctionHouseServer auctionHouseServer;
-    private List<AuctionHouseItem> auctionHouseItems;
+    private List<String> auctionHouseItems;
 
     AuctionHouse() throws UnknownHostException {
         auctionHouseItems = new ArrayList<>();
-        auctionHouseClient = new AuctionHouseClient();
         auctionHouseServer = new AuctionHouseServer();
+        auctionHouseClient = new AuctionHouseClient();
         hostIpAddress = Inet4Address.getLocalHost().getHostAddress();
-        hostPortAddress = auctionHouseServer.getAuctionHouseServerPort();
-    }
-
-
-    public void registerWithBank(int auctionHouseAccount, double auctionHouseBalance) {
-        auctionHouseBalance = 0;
     }
 
     public int getAuctionHouseId() {
@@ -42,14 +32,11 @@ public class AuctionHouse {
     }
 
 
-    // menu/ list of commands to display for users
-
-
     // adding items into the list
     public void addItem() {
-        auctionHouseItems.add(new AuctionHouseItem("xbox", 100, "like new"));
-        auctionHouseItems.add(new AuctionHouseItem("violin", 2000, "antique"));
-        auctionHouseItems.add(new AuctionHouseItem("iphone X", 300, "like new"));
+        auctionHouseItems.add(String.valueOf(new AuctionHouseItem("xbox", 100, "like new")));
+        auctionHouseItems.add(String.valueOf(new AuctionHouseItem("violin", 2000, "antique")));
+        auctionHouseItems.add(String.valueOf(new AuctionHouseItem("iphone X", 300, "like new")));
 
     }
 
@@ -58,21 +45,17 @@ public class AuctionHouse {
         auctionHouseClient.run();
     }
 
-    public void processBankInput(String input) {
+
+    public void processAgentInput(String input) {
         if (input != null) {
             String[] temp = input.split(" ");
             switch (temp[0]) {
-                case "host":
-                    System.out.println("Host IP Address is: " + getHostAddress());
-                case "port":
-                    System.out.println("Host IP Address is: " +  getPortNumber());
+                case "Item":
+
             }
         }
     }
 
-    public void processAgentInput() {
-
-    }
 
     public String getHostAddress() {
         return hostIpAddress;
@@ -80,6 +63,12 @@ public class AuctionHouse {
 
     public int getPortNumber() {
         return hostPortAddress;
+    }
+
+
+    public static void main(String[] args) throws UnknownHostException {
+        AuctionHouse auctionHouse = new AuctionHouse();
+        auctionHouse.initializeAuctionHouse();
     }
 
 
