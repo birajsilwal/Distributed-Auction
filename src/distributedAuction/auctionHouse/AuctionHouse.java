@@ -22,7 +22,7 @@ public class AuctionHouse {
 
     AuctionHouse() throws UnknownHostException {
         auctionHouseItems = new ArrayList<>();
-        auctionHouseServer = new AuctionHouseServer();
+        addItem();
         auctionHouseClient = new AuctionHouseClient();
         hostIpAddress = Inet4Address.getLocalHost().getHostAddress();
     }
@@ -40,21 +40,18 @@ public class AuctionHouse {
 
     }
 
-    public void initializeAuctionHouse() {
-        addItem();
+
+    public void initializeAuctionHouse() throws UnknownHostException {
         auctionHouseClient.run();
+        AuctionHouseServer auctionHouseServer = new AuctionHouseServer();
+        auctionHouseServer.run();
     }
 
 
-    public void processAgentInput(String input) {
-        if (input != null) {
-            String[] temp = input.split(" ");
-            switch (temp[0]) {
-                case "Item":
-
-            }
-        }
+    public List<String> getAuctionHouseItems() {
+        return auctionHouseItems;
     }
+
 
 
     public String getHostAddress() {

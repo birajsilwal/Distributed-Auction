@@ -50,6 +50,11 @@ public class AuctionHouseItem {
         return minBid;
     }
 
+    public String toString() {
+        return "Item Name: " + itemName + ", minBid: " +
+                minBid + ", item description: " + itemDescription;
+    }
+
 
 
 }
