@@ -1,3 +1,5 @@
+/**CS 351L Charley Bickel, Trey Sampson & Biraj Silwal AuctionHouse Project*/
+
 package distributedAuction.agent;
 
 import java.io.BufferedReader;
@@ -6,6 +8,12 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+/**
+ * ip - the IP address of the server
+ * agent - the agent who created the client connection
+ * out - writes messages to server
+ * in - reads messages from server
+ */
 public class AgentClient extends Thread {
 
     private String ip;
@@ -13,6 +21,13 @@ public class AgentClient extends Thread {
     private PrintWriter out;
     private BufferedReader in;
 
+    /**
+     * The constructor for the Client
+     * @param ip - IP address of server
+     * @param port - port of server
+     * @param agent - agent who created the client
+     * @throws IOException
+     */
     public AgentClient(String ip, int port, Agent agent) throws IOException {
         this.ip = ip;
         this.agent = agent;
@@ -22,6 +37,9 @@ public class AgentClient extends Thread {
     }
 
     @Override
+    /**
+     * continually checks for input to process
+     */
     public void run(){
         String inputLine = null;
         do {
@@ -83,10 +101,16 @@ public class AgentClient extends Thread {
         }
     }
 
+    /**
+     * @return - the printwriter that sends messages to server
+     */
     public PrintWriter getOutput(){
         return out;
     }
 
+    /**
+     * @return - the bufferedreader that receives messages from server
+     */
     public BufferedReader getInput(){
         return in;
     }

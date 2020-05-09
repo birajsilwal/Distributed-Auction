@@ -1,9 +1,24 @@
+/**CS 351L Charley Bickel, Trey Sampson & Biraj Silwal AuctionHouse Project*/
+
 package distributedAuction.agent;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+/**
+ * agent - the static agent that is created by user input
+ * name - the agent's name
+ * balance - the agent's balance
+ * accountNum - the account number assigned by the bank
+ * registered - returns true if bank currently has open account
+ * bankClient - the client connection to bank server
+ * ahClient - the client connection to auction house server
+ * BANK_PORT - the port to connect to the bank
+ * AH_PORT - the port to connect to the AH
+ * auctionHouseIPs - a list of IP addresses of auction houses
+ * itemList - list of items provided by a particular auction house
+ */
 public class Agent{
     // these variables store info about the agent itself
     private static Agent agent;
@@ -23,7 +38,12 @@ public class Agent{
     protected LinkedList<String> auctionHouseIPs = new LinkedList<>();
     private static LinkedList<String> itemList = new LinkedList<>();
 
-    // constructor for Agent object
+    /**
+     * The constructor for the Agent class
+     * @param name - agent name
+     * @param balance - agent balance
+     * @throws IOException
+     */
     public Agent(String name, double balance) throws IOException{
         bankClient = new AgentClient(bankIP, BANK_PORT, this);
         bankClient.start();
@@ -33,6 +53,11 @@ public class Agent{
         sendMessage(bankClient, "agent: "+name+" balance: "+balance);
     }
 
+    /**
+     * The main method
+     * @param args - args[0] is the IP address of the bank
+     * @throws IOException
+     */
     public static void main(String args[]) throws IOException{
         bankIP = args[0];
         //create agent with user input from console
@@ -193,14 +218,27 @@ public class Agent{
         mainMenu();
     }
 
+    /**
+     * instructs bank to block funds from account for pending transfer
+     * @param amount - amount of funds to block
+     */
     protected void blockFunds(double amount){
         sendMessage(bankClient, "block " + amount);
     }
 
+    /**
+     * instructs bank to unblock funds for future use
+     * @param amount - amount of funds to unblock
+     */
     protected void unblockFunds(double amount){
         sendMessage(bankClient, "unblock " + amount);
     }
 
+    /**
+     * instructs bank to transfer funds to auction hosue
+     * @param amount - amount to transfer
+     * @param ahIP - IP of auction house
+     */
     protected void transferFunds(double amount, String ahIP){
         sendMessage(bankClient, "transfer: " + amount + " " + ahIP);
     }
@@ -226,6 +264,9 @@ public class Agent{
         terminate();
     }
 
+    /**
+     * instructs bank to terminate account and session
+     */
     protected void terminate(){
         if(registered){
             deregister();
@@ -235,6 +276,9 @@ public class Agent{
         }
     }
 
+    /**
+     * @return - a string representation of the agent
+     */
     public String toString(){
         return name + ": " + balance;
     }
