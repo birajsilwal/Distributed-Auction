@@ -31,9 +31,9 @@ public class AuctionHouse {
 
     public void initializeAuctionHouse() throws UnknownHostException {
         auctionHouseClient = new AuctionHouseClient();
-        auctionHouseServer = new AuctionHouseServer(auctionHouseServerPort);
+//        auctionHouseServer = new AuctionHouseServer(auctionHouseServerPort);
         auctionHouseClient.run();
-        auctionHouseServer.run();
+//        auctionHouseServer.run();
     }
 
 
