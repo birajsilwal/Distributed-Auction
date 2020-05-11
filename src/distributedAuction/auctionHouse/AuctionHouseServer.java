@@ -95,6 +95,8 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
                     }
                 case "terminate":
                     Terminate();
+//                case "bid":
+
             }
         }
     }
