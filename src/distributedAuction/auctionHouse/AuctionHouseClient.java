@@ -19,7 +19,8 @@ public class AuctionHouseClient implements Runnable {
     private PrintWriter output;
 
     AuctionHouseClient() {
-
+        Thread thread = new Thread(this);
+        thread.start();
     }
 
     /*Socket connection is happening here as well as bank's input is parsed here*/

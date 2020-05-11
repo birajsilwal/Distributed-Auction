@@ -28,6 +28,8 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
     AuctionHouseServer(int auctionHouseServerPort) throws UnknownHostException {
         super();
         this.auctionHouseServerPort = auctionHouseServerPort;
+        Thread thread = new Thread(this);
+        thread.start();
     }
 
     @Override
@@ -91,6 +93,8 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
                         output = new PrintWriter(socket.getOutputStream(), true);
                         output.println("Auction House Items: " + item);
                     }
+                case "terminate":
+                    Terminate();
             }
         }
     }
