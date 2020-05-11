@@ -60,8 +60,12 @@ public class AgentClient extends Thread {
     private void processInput(String input){
         if(input != null){
             String[] inputs = input.split(" ");
-            Double bid = Double.parseDouble(inputs[1]);
-            String item = inputs[2];
+            double bid = 0.0;
+            String item = "";
+            if(inputs.length >= 3){
+                bid = Double.parseDouble(inputs[1]);
+                item = inputs[2];
+            }
             switch (inputs[0]){
                 case "newAH:":
                     agent.auctionHouseIPs.add(inputs[1]);

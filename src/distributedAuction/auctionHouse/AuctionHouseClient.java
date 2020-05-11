@@ -12,7 +12,7 @@ public class AuctionHouseClient implements Runnable {
     // socketClient is socket of AuctionHouse
     private Socket socketClient;
     // BANK_PORT is port of the bank
-    private static final int BANK_PORT = 3000;
+    private static final int BANK_PORT = 4444;
     // input is used to take input from bank
     private BufferedReader input;
     // output is used to send data back to the bank's server
@@ -77,7 +77,7 @@ public class AuctionHouseClient implements Runnable {
             switch (temp[0]) {
                 case "host":
                     output = new PrintWriter(socketClient.getOutputStream(), true);
-                    output.println("Host IP Address is: " +  Inet4Address.getLocalHost().getHostAddress());
+                    output.println("auctionHouse: " +  Inet4Address.getLocalHost().getHostAddress());
                 case "port":
                     // output sends data to the server
                     // if false, output will not send data to server
