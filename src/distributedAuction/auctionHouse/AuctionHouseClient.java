@@ -20,7 +20,7 @@ public class AuctionHouseClient implements Runnable {
 
     AuctionHouseClient() {
         Thread thread = new Thread(this);
-        thread.start();
+//        thread.start();
     }
 
     /*Socket connection is happening here as well as bank's input is parsed here*/
@@ -32,9 +32,9 @@ public class AuctionHouseClient implements Runnable {
             socketClient = new Socket("localhost", BANK_PORT);
 
             output = new PrintWriter(socketClient.getOutputStream(), true);
-            output.println("Connected with the bank.");
-            output.println("Host IP Address is: " +  Inet4Address.getLocalHost().getHostAddress());
-            output.println("Host port is: " + 9999);
+            output.println("Host IP Address is: " +  Inet4Address.getLocalHost().getHostAddress() +
+                    " and port number is: " + 9999);
+            System.out.println("Connected with the bank.");
 
             // takes data from socket client input stream
             input = new BufferedReader(

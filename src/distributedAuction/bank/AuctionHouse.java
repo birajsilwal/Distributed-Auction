@@ -22,7 +22,7 @@ public class AuctionHouse{
         //Sets up the server for the auction house
         serverSocket = new ServerSocket(4445);
         //Connects as a client to the bank
-        clientSocket = new Socket("10.20.10.167", 4444);
+        clientSocket = new Socket("localhost", 4444);
         //sets up readers and writers for the input output streams
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
