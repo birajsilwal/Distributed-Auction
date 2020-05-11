@@ -32,8 +32,7 @@ public class AuctionHouseClient implements Runnable {
             socketClient = new Socket("localhost", BANK_PORT);
 
             output = new PrintWriter(socketClient.getOutputStream(), true);
-            output.println("Host IP Address is: " +  Inet4Address.getLocalHost().getHostAddress() +
-                    " and port number is: " + 9999);
+            output.println("auctionhouse: " +  Inet4Address.getLocalHost().getHostAddress());
             System.out.println("Connected with the bank.");
 
             // takes data from socket client input stream
