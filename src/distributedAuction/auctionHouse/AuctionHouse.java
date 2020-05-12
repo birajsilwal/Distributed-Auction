@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+/*Main class where the Auction House as well as other required classes gets initialized*/
 public class AuctionHouse {
 
     private AHBankClient AHBankClient;
@@ -32,6 +33,7 @@ public class AuctionHouse {
 
     }
 
+    /*both auction house server and auction house client gets initialized here*/
     public void initializeAuctionHouse() throws UnknownHostException {
         AHBankClient = new AHBankClient(socketBank, bankInput);
         auctionHouseServer = new AuctionHouseServer(auctionHouseServerPort, auctionHouseItems, socketBank, bankInput);
@@ -39,7 +41,7 @@ public class AuctionHouse {
         auctionHouseServer.run();
     }
 
-
+    /**@return list of item available in auction house*/
     public List<AuctionHouseItem> getAuctionHouseItems() {
         return auctionHouseItems;
     }
