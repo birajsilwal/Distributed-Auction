@@ -101,6 +101,9 @@ public class AgentClient extends Thread {
                     System.out.println("You have won the auction. Your money will be transferred to the auction house. " +
                             "Please bid on another item.");
                     break;
+                default:
+                    System.out.println(input);
+                    break;
             }
         }
     }

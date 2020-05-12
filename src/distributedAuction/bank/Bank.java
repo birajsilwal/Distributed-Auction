@@ -46,17 +46,17 @@ public class Bank {
                 case "deposit":
                     double depositAmount = Double.parseDouble(input[1]);
                     client.getAccount().deposit(depositAmount);
-                    client.getOut().println("Deposited $"+depositAmount+" new balance $"+client.getAccount().getAvailableBalance());
+                    client.getOut().println("Deposited "+depositAmount+" new balance $"+client.getAccount().getAvailableBalance());
                     break;
                 case "blockFunds":
                     double blockAmount = Double.parseDouble(input[1]);
                     client.getAccount().blockFunds(blockAmount);
-                    client.getOut().println("Blocked $"+blockAmount);
+                    client.getOut().println("Blocked "+blockAmount);
                     break;
                 case "unblockFunds":
                     double unblockAmount = Double.parseDouble(input[1]);
                     client.getAccount().unblockFunds(unblockAmount);
-                    client.getOut().println("Unblocked funds, new available balance: $"+client.getAccount().getAvailableBalance());
+                    client.getOut().println("Unblocked "+unblockAmount+ " new balance: "+client.getAccount().getAvailableBalance());
                     break;
                 case "transfer":
                     Account houseAccount = houseAccountMap.get(input[2]);
