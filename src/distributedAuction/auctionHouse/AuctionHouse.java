@@ -48,6 +48,4 @@ public class AuctionHouse {
         AuctionHouse auctionHouse = new AuctionHouse();
         auctionHouse.initializeAuctionHouse();
     }
-
-
 }
