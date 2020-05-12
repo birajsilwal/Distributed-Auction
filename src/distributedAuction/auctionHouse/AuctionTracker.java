@@ -15,13 +15,13 @@ public class  AuctionTracker implements Runnable {
     private Boolean biddingStatusItemIsSold;
     private int hostAddress;
 
-    AuctionTracker(int hostAddress) {
+    AuctionTracker() {
         // need to update minBid and currBid
         currBid = 0;
         timeToOvertakeBid = 30; // 30 sec
         biddingStatusIsBidding = false;
         biddingStatusItemIsSold = false;
-        this.hostAddress = hostAddress;
+//        this.hostAddress = hostAddress;
     }
 
     /**@return current bid status*/

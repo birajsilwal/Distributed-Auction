@@ -18,10 +18,11 @@ public class AuctionHouseClient implements Runnable {
     // output is used to send data back to the bank's server
     private PrintWriter output;
 
-    AuctionHouseClient(Socket socketClient) {
+    AuctionHouseClient(Socket socketClient, BufferedReader input) {
         this.socketClient = socketClient;
+        this.input = input;
         Thread thread = new Thread(this);
-//        thread.start();
+        thread.start();
     }
 
     /*Socket connection is happening here as well as bank's input is parsed here*/

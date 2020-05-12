@@ -1,5 +1,6 @@
 package distributedAuction.auctionHouse;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Inet4Address;
@@ -15,10 +16,14 @@ public class AuctionHouse {
     private List<AuctionHouseItem> auctionHouseItems;
     private final int auctionHouseServerPort = 9999;
     private Socket socketBank;
+    private AuctionTracker auctionTracker;
+    private BufferedReader bankInput;
 
-    AuctionHouse() throws UnknownHostException {
+    AuctionHouse() {
         auctionHouseItems = new ArrayList<>();
         addItem();
+        socketBank = new Socket();
+        auctionTracker = new AuctionTracker();
     }
 
     // adding items into the list
@@ -31,10 +36,10 @@ public class AuctionHouse {
     }
 
     public void initializeAuctionHouse() throws UnknownHostException {
-        auctionHouseClient = new AuctionHouseClient(socketBank);
-        auctionHouseServer = new AuctionHouseServer(auctionHouseServerPort, auctionHouseItems, socketBank);
+        auctionHouseClient = new AuctionHouseClient(socketBank, bankInput);
+        auctionHouseServer = new AuctionHouseServer(auctionHouseServerPort, auctionHouseItems, socketBank, bankInput);
         auctionHouseClient.run();
-//        auctionHouseServer.run();
+        auctionHouseServer.run();
     }
 
 

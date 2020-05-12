@@ -4,10 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.List;
 
 /*AuctionHouseServer is server for Agent. Port 9999 is used for all
@@ -16,8 +14,11 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
 
     // input is used to get input from agent
     private BufferedReader input;
+
+    private BufferedReader bankInput;
+
     // output is used to send data back to the agent
-    private PrintWriter output;
+    private PrintWriter outputAgent;
     // serverSocket is required for server
     private ServerSocket serverSocket;
     // socket is used for communication
@@ -33,12 +34,23 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
     private Socket socketBank;
     private PrintWriter printWriterBank;
 
-    AuctionHouseServer(int auctionHouseServerPort, List<AuctionHouseItem> auctionHouseItemList, Socket socketBank) throws UnknownHostException {
+    private int agentId;
+    private int agentBalance;
+
+
+    AuctionHouseServer(int auctionHouseServerPort, List<AuctionHouseItem>
+            auctionHouseItemList, Socket socketBank, BufferedReader bankInput) {
         super();
         this.auctionHouseServerPort = auctionHouseServerPort;
-        auctionTracker = new AuctionTracker(serverSocket.getLocalPort());
+        auctionTracker = new AuctionTracker();
+        this.bankInput = bankInput;
         this.auctionHouseItemList = auctionHouseItemList;
         itemName = "";
+
+        // need to fix this
+        agentId = 0;
+        agentBalance = 0;
+
         this.socketBank = socketBank;
         Thread thread = new Thread(this);
         thread.start();
@@ -106,8 +118,8 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
                     List<AuctionHouseItem> items = getAuctionHouseItems();
 
                     for (AuctionHouseItem item : items) {
-                        output = new PrintWriter(socket.getOutputStream(), true);
-                        output.println("Auction House Items: " + item);
+                        outputAgent = new PrintWriter(socket.getOutputStream(), true);
+                        outputAgent.println("Auction House Items: " + item);
                     }
 
                 case "terminate":
@@ -119,14 +131,23 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
                     }
 
                 case "bid":
-                    AuctionHouseItem auctionHouseItem = auctionHouseItemList.get(itemIndex);
-                    itemName = auctionHouseItem.getItemName();
-                    auctionHouseItem.setMinBid(bidAmount);
 
-                    printWriterBank = new PrintWriter(socketBank.getOutputStream(), true);
-                    printWriterBank.println("Unblock " + bidAmount);
+                    printWriterBank.write("Check balance for: " + agentId);
+                    agentBalance = bankInput.read();
 
-                    output.println("Bid successful!!!");
+                    if (agentBalance >= bidAmount) {
+                        AuctionHouseItem auctionHouseItem = auctionHouseItemList.get(itemIndex);
+                        itemName = auctionHouseItem.getItemName();
+                        auctionHouseItem.setMinBid(bidAmount);
+
+                        printWriterBank = new PrintWriter(socketBank.getOutputStream(), true);
+                        printWriterBank.println("Unblock " + bidAmount);
+
+                        outputAgent.println("Bid successful!!!");
+                    }
+                    else {
+                        outputAgent.println("Bidding unsuccessful.");
+                    }
 
             }
 
