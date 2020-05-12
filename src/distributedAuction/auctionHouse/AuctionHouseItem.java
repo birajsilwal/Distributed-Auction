@@ -10,12 +10,14 @@ public class AuctionHouseItem {
     private String itemDescription;
     private List<AuctionHouseItem> auctionItemsList;
     private int minBid;
+    private int agentId;
 
     AuctionHouseItem(String itemName, int minBid, String itemDescription) {
         this.itemName = itemName;
         this.itemId = itemId;
         this.minBid = minBid;
         this.itemDescription = itemDescription;
+        this.agentId = 0;
     }
 
     /**@return name of an item*/
@@ -42,13 +44,18 @@ public class AuctionHouseItem {
         return minBid;
     }
 
-    public void setMinBid(int amount) {
+    public void setMinBid(int amount, int agentId) {
         this.minBid = amount;
+        this.agentId = agentId;
     }
 
     public String toString() {
         return "Item Name: " + itemName + ", minBid: " +
                 minBid + ", item description: " + itemDescription;
+    }
+
+    public int getAgentId() {
+        return agentId;
     }
 
 }

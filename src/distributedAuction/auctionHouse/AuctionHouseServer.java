@@ -39,6 +39,7 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
     private int agentId;
     private int agentBalance;
     private Map<AuctionHouseClient, Integer> clientIDMap;
+    private Boolean timerRunning;
 
 
     AuctionHouseServer(int auctionHouseServerPort, List<AuctionHouseItem>
@@ -56,9 +57,7 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
         agentBalance = 0;
 
         agentId = 1;
-        //hashMap.put(agentId, socket);
-        //agentId ++;
-
+        timerRunning = true;
         this.socketBank = socketBank;
         Thread thread = new Thread(this);
         thread.start();
@@ -80,7 +79,7 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
                     new InputStreamReader(socket.getInputStream()));
 
             outputAgent = new PrintWriter(socket.getOutputStream());
-            AuctionHouseClient client = new AuctionHouseClient(input, outputAgent, agentId);
+            AuctionHouseClient client = new AuctionHouseClient(input, outputAgent, agentId, socket);
             clientIDMap.put(client, agentId);
             agentId++;
             // item selected by agent
@@ -146,22 +145,40 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
                     }
 
                 case "bid":
+                    try {
+                        auctionTracker.setTimer();
+                        while (timerRunning = true) {
+                            AuctionHouseItem auctionHouseItem = auctionHouseItemList.get(itemIndex);
+                            agentId = auctionHouseItem.getAgentId();
+                            AuctionHouseClient auctionHouseClient = null;
 
-                    printWriterBank.write("Check balance for: " + agentId);
-                    agentBalance = bankInput.read();
+                            // if its different agent than the above 1
+                            if (auctionHouseItem.getAgentId() != 1) {
+                                for (Map.Entry<AuctionHouseClient, Integer> entry : clientIDMap.entrySet()) {
+                                    if (entry.getKey().getId() == agentId) {
+                                        auctionHouseClient = entry.getKey();
+                                    }
+                                    Socket socketAgent = auctionHouseClient.getSocketAgent();
+                                    outputAgent = new PrintWriter(socketAgent.getOutputStream());
+                                    outputAgent.println("Your bid is outbidded.");
+                                    outputAgent.flush();
+                                    auctionTracker.resetTimeToOvertakeBid();
+                                }
+                            } else {
+                                itemName = auctionHouseItem.getItemName();
+                                auctionHouseItem.setMinBid(bidAmount, clientIDMap.get(agentId));
 
-                    if (agentBalance >= bidAmount) {
-                        AuctionHouseItem auctionHouseItem = auctionHouseItemList.get(itemIndex);
-                        itemName = auctionHouseItem.getItemName();
-                        auctionHouseItem.setMinBid(bidAmount);
+                                printWriterBank = new PrintWriter(socketBank.getOutputStream(), true);
+                                printWriterBank.println("Unblock " + bidAmount);
 
-                        printWriterBank = new PrintWriter(socketBank.getOutputStream(), true);
-                        printWriterBank.println("Unblock " + bidAmount);
-
-                        outputAgent.println("Bid successful!!!");
+                                outputAgent.println("Bid successful!!!");
+                                timerRunning = false;
+                            }
+                        }
                     }
-                    else {
-                        outputAgent.println("Bidding unsuccessful.");
+                    catch (Exception e) {
+                        System.out.println("There is a problem with bidding. Bidding unsuccessful.");
+                        e.printStackTrace();
                     }
 
             }

@@ -3,11 +3,13 @@ package distributedAuction.auctionHouse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.Socket;
 
 public class AuctionHouseClient extends AuctionHouseServer implements Runnable{
     private int id;
     private BufferedReader in;
     private PrintWriter out;
+    private Socket socketAgent;
 
     /**
      * creates a new instance of AgentClient to be run immediately after creation
@@ -15,10 +17,11 @@ public class AuctionHouseClient extends AuctionHouseServer implements Runnable{
      * @param out message outputStream to send message to the client
      * @param id unique identifier for the connected agent
      */
-    public AuctionHouseClient(BufferedReader in, PrintWriter out, int id){
+    public AuctionHouseClient(BufferedReader in, PrintWriter out, int id, Socket socketAgent){
         this.id = id;
         this.in = in;
         this.out = out;
+        this.socketAgent = socketAgent;
         Thread thread = new Thread(this);
         thread.start();
     }
@@ -56,5 +59,13 @@ public class AuctionHouseClient extends AuctionHouseServer implements Runnable{
      */
     public PrintWriter getOut() {
         return out;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Socket getSocketAgent() {
+        return socketAgent;
     }
 }
