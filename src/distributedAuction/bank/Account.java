@@ -1,12 +1,17 @@
 /**CS 351 Charley Bickel Project 5 Distributed Auctions*/
 package distributedAuction.bank;
 
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+
 /**
  * class for creating new bank account objects for all the connected clients
  * which access the bank. Each account is assigned a unique number and maintains
  * three double values for its total balance, available balance, and blocked funds.
  */
 public class Account{
+    private PrintWriter out;
+    private BufferedReader in;
     private int accountNum;
     private double availableBalance;
     private double blockedBalance;
@@ -59,6 +64,7 @@ public class Account{
             updateTotalBalance();
             System.out.println("$"+amount+" has been blocked");
         }else{
+
             System.out.println("Insufficient funds, available balance remains unchanged");
         }
     }

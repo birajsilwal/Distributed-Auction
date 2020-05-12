@@ -38,7 +38,7 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
 
     private int agentId;
     private int agentBalance;
-    private Map<Integer, Socket> hashMap;
+    private Map<AuctionHouseClient, Integer> clientIDMap;
 
 
     AuctionHouseServer(int auctionHouseServerPort, List<AuctionHouseItem>
@@ -49,23 +49,26 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
         this.bankInput = bankInput;
         this.auctionHouseItemList = auctionHouseItemList;
         itemName = "";
-        hashMap = new HashMap<>();
+        clientIDMap = new HashMap<>();
 
         // need to fix this
 
         agentBalance = 0;
 
         agentId = 1;
-        hashMap.put(agentId, socket);
-        agentId ++;
+        //hashMap.put(agentId, socket);
+        //agentId ++;
 
         this.socketBank = socketBank;
         Thread thread = new Thread(this);
         thread.start();
     }
 
+    public AuctionHouseServer() {
+    }
+
     @Override
-    public void run() {
+    public void run(){
         try {
             System.out.println("Waiting for client to connect...");
             serverSocket = new ServerSocket(auctionHouseServerPort);
@@ -76,6 +79,10 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
             input = new BufferedReader(
                     new InputStreamReader(socket.getInputStream()));
 
+            outputAgent = new PrintWriter(socket.getOutputStream());
+            AuctionHouseClient client = new AuctionHouseClient(input, outputAgent, agentId);
+            clientIDMap.put(client, agentId);
+            agentId++;
             // item selected by agent
             itemIndex = 0;
 

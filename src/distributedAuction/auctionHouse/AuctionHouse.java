@@ -1,9 +1,6 @@
 package distributedAuction.auctionHouse;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.net.Inet4Address;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -11,7 +8,7 @@ import java.util.List;
 
 public class AuctionHouse {
 
-    private AuctionHouseClient auctionHouseClient;
+    private AHBankClient AHBankClient;
     private AuctionHouseServer auctionHouseServer;
     private List<AuctionHouseItem> auctionHouseItems;
     private final int auctionHouseServerPort = 9999;
@@ -36,9 +33,9 @@ public class AuctionHouse {
     }
 
     public void initializeAuctionHouse() throws UnknownHostException {
-        auctionHouseClient = new AuctionHouseClient(socketBank, bankInput);
+        AHBankClient = new AHBankClient(socketBank, bankInput);
         auctionHouseServer = new AuctionHouseServer(auctionHouseServerPort, auctionHouseItems, socketBank, bankInput);
-        auctionHouseClient.run();
+        AHBankClient.run();
         auctionHouseServer.run();
     }
 
