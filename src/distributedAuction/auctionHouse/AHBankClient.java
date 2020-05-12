@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.Inet4Address;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 
 /*AuctionHouseClient is client of Bank, auction house is connected to bank's
 * server via socket port BANK_PORT */
@@ -28,36 +29,44 @@ public class AHBankClient implements Runnable {
     /*Socket connection is happening here as well as bank's input is parsed here*/
     @Override
     public void run() {
-        try{
-            System.out.println("Client started...");
-            // establishes connection to the bank's server port
-            socketClient = new Socket("localhost", BANK_PORT);
+            try {
+                System.out.println("Client started...");
+                // establishes connection to the bank's server port
 
-            output = new PrintWriter(socketClient.getOutputStream(), true);
-            output.println("auctionhouse: " +  Inet4Address.getLocalHost().getHostAddress());
-            System.out.println("Connected with the bank.");
+                Scanner scanner = new Scanner(System.in);
+                System.out.print("Enter Bank's ip: ");
+                String ip = scanner.next();
 
-            // takes data from socket client input stream
-            input = new BufferedReader(
-             new InputStreamReader(socketClient.getInputStream()));
+                socketClient = new Socket(ip, BANK_PORT);
 
-            String str = input.readLine();
+                output = new PrintWriter(socketClient.getOutputStream(), true);
+                output.println("auctionhouse: " + Inet4Address.getLocalHost().getHostAddress());
+                System.out.println("Connected with the bank.");
 
-            if (str.equals("terminate")) {
-                Terminate();
-            }
-            else {
-                try {
-                    processBankInput(str);
-                    System.out.println();
-                } catch (Exception e) {
-                    System.out.println("Problem with taking Bank's input");
-                    e.printStackTrace();
+                // takes data from socket client input stream
+                input = new BufferedReader(
+                        new InputStreamReader(socketClient.getInputStream()));
+
+                String str = input.readLine();
+
+                if (str.equals("terminate")) {
+                    Terminate();
+                } else {
+                    try {
+                        processBankInput(str);
+                        System.out.println();
+                    } catch (Exception e) {
+                        System.out.println("Problem with taking Bank's input");
+                        e.printStackTrace();
+                    }
                 }
+            } catch (Exception exception) {
+                System.out.println("Start the bank server first.");
             }
-        }
-        catch(Exception exception) {
-            System.out.println("There is a problem with client.");
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
     }

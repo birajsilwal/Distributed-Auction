@@ -69,7 +69,7 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
     @Override
     public void run(){
         try {
-            System.out.println("Waiting for client to connect...");
+            System.out.println("AH server: Waiting for client to connect...");
             serverSocket = new ServerSocket(auctionHouseServerPort);
             socket = serverSocket.accept();
             System.out.println("Client connection established.");
