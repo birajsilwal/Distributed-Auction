@@ -37,7 +37,6 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
     private PrintWriter printWriterBank;
 
     private int agentId;
-    private int agentBalance;
     private Map<AuctionHouseClient, Integer> clientIDMap;
     private Boolean timerRunning;
 
@@ -51,10 +50,6 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
         this.auctionHouseItemList = auctionHouseItemList;
         itemName = "";
         clientIDMap = new HashMap<>();
-
-        // need to fix this
-
-        agentBalance = 0;
 
         agentId = 1;
         timerRunning = true;

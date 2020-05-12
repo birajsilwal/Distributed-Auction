@@ -54,6 +54,7 @@ public class AuctionHouseItem {
                 minBid + ", item description: " + itemDescription;
     }
 
+    /** @return id of an agent */
     public int getAgentId() {
         return agentId;
     }

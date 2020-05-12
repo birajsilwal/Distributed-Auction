@@ -4,7 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /*AuctionTrack keeps track of auction[s]*/
-public class  AuctionTracker extends AuctionHouseServer implements Runnable {
+public class  AuctionTracker implements Runnable {
 
     // currBid is the updated bid of an item
     private int currBid;
