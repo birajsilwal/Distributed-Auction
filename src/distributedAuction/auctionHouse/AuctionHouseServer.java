@@ -77,14 +77,8 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
             AuctionHouseClient client = new AuctionHouseClient(input, outputAgent, agentId, socket);
             clientIDMap.put(client, agentId);
             agentId++;
-            // item selected by agent
-            itemIndex = 0;
-
-            // amount that agent bid on an item. hardcoded 500 just to test
-            bidAmount = 500;
 
             String str = input.readLine();
-
 
             try {
                 processAgentInput(str);
@@ -140,6 +134,11 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
                     }
 
                 case "bid":
+                    // item selected by agent
+                    itemIndex = Integer.parseInt(temp[1]);
+                    // amount that agent bid on an item. hardcoded 500 just to test
+                    bidAmount = Integer.parseInt(temp[2]);
+
                     try {
                         auctionTracker.setTimer();
                         while (timerRunning = true) {
@@ -175,9 +174,7 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
                         System.out.println("There is a problem with bidding. Bidding unsuccessful.");
                         e.printStackTrace();
                     }
-
             }
-
             processAgentInput(input);
         }
     }
