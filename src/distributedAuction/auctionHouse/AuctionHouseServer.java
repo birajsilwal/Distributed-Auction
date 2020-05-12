@@ -25,9 +25,21 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
     // port for AuctionHouse Server
     private int auctionHouseServerPort;
 
-    AuctionHouseServer(int auctionHouseServerPort) throws UnknownHostException {
+    private AuctionTracker auctionTracker;
+    private List<AuctionHouseItem> auctionHouseItemList;
+    private int bidAmount;
+    private int itemIndex;
+    private String itemName;
+    private Socket socketBank;
+    private PrintWriter printWriterBank;
+
+    AuctionHouseServer(int auctionHouseServerPort, List<AuctionHouseItem> auctionHouseItemList, Socket socketBank) throws UnknownHostException {
         super();
         this.auctionHouseServerPort = auctionHouseServerPort;
+        auctionTracker = new AuctionTracker(serverSocket.getLocalPort());
+        this.auctionHouseItemList = auctionHouseItemList;
+        itemName = "";
+        this.socketBank = socketBank;
         Thread thread = new Thread(this);
         thread.start();
     }
@@ -44,19 +56,22 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
             input = new BufferedReader(
                     new InputStreamReader(socket.getInputStream()));
 
+            // item selected by agent
+            itemIndex = 0;
+
+            // amount that agent bid on an item. hardcoded 500 just to test
+            bidAmount = 500;
+
             String str = input.readLine();
 
-            if (str.equals("terminate")) {
-                Terminate();
+
+            try {
+                processAgentInput(str);
+            } catch (Exception e) {
+                System.out.println("Problem with taking Bank's input");
+                e.printStackTrace();
             }
-            else {
-                try {
-                    processAgentInput(str);
-                } catch (Exception e) {
-                    System.out.println("Problem with taking Bank's input");
-                    e.printStackTrace();
-                }
-            }
+
         }
         catch (Exception exception) {
             System.out.println("There is a problem with Auction House server.");
@@ -86,18 +101,36 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
         if (input != null) {
             String[] temp = input.split(" ");
             switch (temp[0]) {
-                case "item":
-                    List<String> items = getAuctionHouseItems();
 
-                    for (String item : items) {
+                case "item":
+                    List<AuctionHouseItem> items = getAuctionHouseItems();
+
+                    for (AuctionHouseItem item : items) {
                         output = new PrintWriter(socket.getOutputStream(), true);
                         output.println("Auction House Items: " + item);
                     }
+
                 case "terminate":
-                    Terminate();
-//                case "bid":
+                    if (auctionTracker.getBiddingStatusIsBidding()) {
+                        System.out.println("Can't terminate when bidding is going.");
+                    }
+                    else {
+                        Terminate();
+                    }
+
+                case "bid":
+                    AuctionHouseItem auctionHouseItem = auctionHouseItemList.get(itemIndex);
+                    itemName = auctionHouseItem.getItemName();
+                    auctionHouseItem.setMinBid(bidAmount);
+
+                    printWriterBank = new PrintWriter(socketBank.getOutputStream(), true);
+                    printWriterBank.println("Unblock " + bidAmount);
+
+                    output.println("Bid successful!!!");
 
             }
+
+            processAgentInput(input);
         }
     }
 

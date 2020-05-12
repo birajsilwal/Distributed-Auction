@@ -12,8 +12,9 @@ public class AuctionHouse {
 
     private AuctionHouseClient auctionHouseClient;
     private AuctionHouseServer auctionHouseServer;
-    private List<String> auctionHouseItems;
+    private List<AuctionHouseItem> auctionHouseItems;
     private final int auctionHouseServerPort = 9999;
+    private Socket socketBank;
 
     AuctionHouse() throws UnknownHostException {
         auctionHouseItems = new ArrayList<>();
@@ -22,22 +23,22 @@ public class AuctionHouse {
 
     // adding items into the list
     public void addItem() {
-        auctionHouseItems.add(String.valueOf(new AuctionHouseItem("xbox", 100, "like new")));
-        auctionHouseItems.add(String.valueOf(new AuctionHouseItem("violin", 2000, "antique")));
-        auctionHouseItems.add(String.valueOf(new AuctionHouseItem("iphone X", 300, "like new")));
-        auctionHouseItems.add(String.valueOf(new AuctionHouseItem("s20", 800, "like new")));
+        auctionHouseItems.add(new AuctionHouseItem("xbox", 100, "like new"));
+        auctionHouseItems.add(new AuctionHouseItem("violin", 2000, "antique"));
+        auctionHouseItems.add(new AuctionHouseItem("iphone X", 300, "like new"));
+        auctionHouseItems.add(new AuctionHouseItem("s20", 800, "like new"));
 
     }
 
     public void initializeAuctionHouse() throws UnknownHostException {
-        auctionHouseClient = new AuctionHouseClient();
-//        auctionHouseServer = new AuctionHouseServer(auctionHouseServerPort);
+        auctionHouseClient = new AuctionHouseClient(socketBank);
+        auctionHouseServer = new AuctionHouseServer(auctionHouseServerPort, auctionHouseItems, socketBank);
         auctionHouseClient.run();
 //        auctionHouseServer.run();
     }
 
 
-    public List<String> getAuctionHouseItems() {
+    public List<AuctionHouseItem> getAuctionHouseItems() {
         return auctionHouseItems;
     }
 

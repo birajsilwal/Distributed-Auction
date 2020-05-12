@@ -42,6 +42,10 @@ public class AuctionHouseItem {
         return minBid;
     }
 
+    public void setMinBid(int amount) {
+        this.minBid = amount;
+    }
+
     public String toString() {
         return "Item Name: " + itemName + ", minBid: " +
                 minBid + ", item description: " + itemDescription;
