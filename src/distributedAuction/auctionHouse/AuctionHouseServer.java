@@ -6,7 +6,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*AuctionHouseServer is server for Agent. Port 9999 is used for all
 * auction house server but host address is different */
@@ -36,6 +38,7 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
 
     private int agentId;
     private int agentBalance;
+    private Map<Integer, Socket> hashMap;
 
 
     AuctionHouseServer(int auctionHouseServerPort, List<AuctionHouseItem>
@@ -46,10 +49,15 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
         this.bankInput = bankInput;
         this.auctionHouseItemList = auctionHouseItemList;
         itemName = "";
+        hashMap = new HashMap<>();
 
         // need to fix this
-        agentId = 0;
+
         agentBalance = 0;
+
+        agentId = 1;
+        hashMap.put(agentId, socket);
+        agentId ++;
 
         this.socketBank = socketBank;
         Thread thread = new Thread(this);
@@ -80,7 +88,7 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
             try {
                 processAgentInput(str);
             } catch (Exception e) {
-                System.out.println("Problem with taking Bank's input");
+                System.out.println("Problem with taking Agent's input");
                 e.printStackTrace();
             }
 
