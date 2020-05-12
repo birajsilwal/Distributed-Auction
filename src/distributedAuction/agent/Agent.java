@@ -74,8 +74,6 @@ public class Agent{
         String name = scanner.nextLine();
         System.out.println("Agent name is " + name + ". Please enter starting balance.");
         double balance = scanner.nextDouble();
-        System.out.println("Please enter the IP address of the bank that you would like to connect to.");
-        String bankIP = scanner.nextLine();
         return new Agent(name, balance);
     }
 

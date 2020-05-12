@@ -119,6 +119,7 @@ public class Bank {
         System.out.println("Main Bank at address: "+Inet4Address.getLocalHost().getHostAddress());
         while (true){
             Socket clientSocket = serverSocket.accept();
+            System.out.println("new client trying to connect");
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
             //Reads the initial message to determine which type of client to create.
