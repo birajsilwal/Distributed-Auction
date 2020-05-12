@@ -6,7 +6,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 /*AuctionHouseClient is client of Bank, auction house is connected to bank's
-* server via socket port 3000*/
+* server via socket port BANK_PORT */
 public class AHBankClient implements Runnable {
 
     // socketClient is socket of AuctionHouse

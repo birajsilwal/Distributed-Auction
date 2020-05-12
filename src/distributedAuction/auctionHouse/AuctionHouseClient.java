@@ -61,10 +61,12 @@ public class AuctionHouseClient extends AuctionHouseServer implements Runnable{
         return out;
     }
 
+    /**@return id of an agent*/
     public int getId() {
         return id;
     }
 
+    /**@return socket where agent is connected*/
     public Socket getSocketAgent() {
         return socketAgent;
     }

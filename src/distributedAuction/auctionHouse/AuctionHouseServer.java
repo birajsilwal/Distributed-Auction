@@ -16,26 +16,31 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
 
     // input is used to get input from agent
     private BufferedReader input;
-
+    // bankInput is to get input from bank
     private BufferedReader bankInput;
-
     // output is used to send data back to the agent
     private PrintWriter outputAgent;
+    // printWriterBank is to send data to bank server
+    private PrintWriter printWriterBank;
     // serverSocket is required for server
     private ServerSocket serverSocket;
-    // socket is used for communication
+    // socket is used for communication with agent
     private Socket socket;
+    // socket is used for communication with bank
+    private Socket socketBank;
     // port for AuctionHouse Server
     private int auctionHouseServerPort;
 
     private AuctionTracker auctionTracker;
+    // list of an item available in auction house
     private List<AuctionHouseItem> auctionHouseItemList;
+    // amount bidded by agent
     private int bidAmount;
+    // index of item selected by agent
     private int itemIndex;
+    // name of an item
     private String itemName;
-    private Socket socketBank;
-    private PrintWriter printWriterBank;
-
+    // id of an agent
     private int agentId;
     private Map<AuctionHouseClient, Integer> clientIDMap;
     private Boolean timerRunning;
@@ -94,11 +99,7 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
 
     }
 
-    public int getAuctionHouseServerPort() {
-        return serverSocket.getLocalPort();
-    }
-
-
+    /*Method for terminating server and closing socket upon request of agent*/
     public synchronized void Terminate() {
         System.out.println("Terminating the program...");
         System.out.println("Deregistering auction house with the bank.");
@@ -112,6 +113,7 @@ public class AuctionHouseServer extends AuctionHouse implements Runnable {
         }
     }
 
+    /**@param input is used as input from agent and used for further processing*/
     public void processAgentInput(String input) throws IOException {
         if (input != null) {
             String[] temp = input.split(" ");
